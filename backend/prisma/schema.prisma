@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String?
+  googleId     String?   @unique
+  name         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  personas     Persona[]
+}
+
+model Persona {
+  id                     String         @id @default(cuid())
+  userId                 String
+  user                   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // 基本情報
+  genre                  String
+  oneLiner               String
+  creatorCallname        String
+  fanCallname            String
+  
+  // 話し方
+  tone                   String
+  politenessLevel        Int
+  emojiUsage             String
+  replyLength            String
+  phrasingExamples       String         @db.Text
+  bannedPhrases          String         @db.Text
+  
+  // 距離感/境界線
+  relationshipStyle      String
+  smalltalkLevel         String
+  supportScope           String
+  refusalStyle           String
+  boundaries             String         @db.Text
+  
+  // 世界観/価値観
+  worldKeywords          String         @db.Text
+  coreValues             String         @db.Text
+  consistencyRule        String
+  
+  // FAQ
+  faqPairs               String         @db.Text
+  
+  // 追加NG
+  ngTopicsExtra          String         @db.Text
+  
+  // 共有情報
+  shareLinks             String         @db.Text
+  shareInfo              String         @db.Text
+  
+  // 生成されたプロンプト
+  systemPrompt           String         @db.Text
+  
+  // LINE連携
+  lineChannelAccessToken String?
+  lineChannelSecret      String?
+  
+  isActive               Boolean        @default(false)
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  
+  conversations          Conversation[]
+}
+
+model Conversation {
+  id           String   @id @default(cuid())
+  personaId    String
+  persona      Persona  @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  source       String   // "web" or "line"
+  fanLineId    String?
+  userMessage  String   @db.Text
+  aiReply      String   @db.Text
+  rating       Int?     // 1-5
+  isNgDetected Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  
+  @@index([personaId, createdAt])
+}
