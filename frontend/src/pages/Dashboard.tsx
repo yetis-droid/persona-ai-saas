@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex">
       {/* サイドバー */}
-      <aside className="w-72 bg-white/80 backdrop-blur-sm border-r border-gray-200/50 flex flex-col shadow-xl">
+      <aside style={{ width: '288px', minWidth: '288px', maxWidth: '288px' }} className="bg-white/80 backdrop-blur-sm border-r border-gray-200/50 flex flex-col shadow-xl">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
@@ -340,7 +340,9 @@ const Dashboard: React.FC = () => {
                         </div>
                         <h3 className="text-xl font-bold text-gray-900">評価分布</h3>
                       </div>
-                      <Doughnut data={ratingChartData} />
+                      <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+                        <Doughnut data={ratingChartData} options={{ responsive: true, maintainAspectRatio: true }} />
+                      </div>
                     </div>
                   )}
                   
@@ -354,7 +356,9 @@ const Dashboard: React.FC = () => {
                         </div>
                         <h3 className="text-xl font-bold text-gray-900">ソース別会話数</h3>
                       </div>
-                      <Doughnut data={sourceChartData} />
+                      <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+                        <Doughnut data={sourceChartData} options={{ responsive: true, maintainAspectRatio: true }} />
+                      </div>
                     </div>
                   )}
                 </div>
