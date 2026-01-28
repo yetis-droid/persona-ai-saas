@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 import { authenticate } from '../middleware/auth';
 import { generateAIReply, containsNGTopic, SAFE_REFUSAL_MESSAGE } from '../utils/claudeApi';
+import { checkUsageLimit, incrementConversationCount } from '../middleware/usageLimit';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -14,6 +15,7 @@ const prisma = new PrismaClient();
 router.post(
   '/',
   authenticate,
+  checkUsageLimit, // 使用量制限チェックを追加
   [
     body('personaId').notEmpty().withMessage('人格IDが必要です'),
     body('message').notEmpty().withMessage('メッセージを入力してください')
@@ -104,6 +106,9 @@ router.post(
           isNgDetected: false
         }
       });
+
+      // 6. 会話カウントを増やす
+      await incrementConversationCount(req.user!.userId);
 
       res.json({
         reply: aiReply,

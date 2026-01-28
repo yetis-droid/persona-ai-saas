@@ -16,9 +16,22 @@ model User {
   passwordHash String?
   googleId     String?   @unique
   name         String?
+  
+  // サブスクリプション情報
+  subscriptionTier    String    @default("free")  // "free" or "premium"
+  stripeCustomerId    String?   @unique
+  stripeSubscriptionId String?  @unique
+  subscriptionStatus  String    @default("inactive") // "active", "inactive", "canceled"
+  subscriptionEndsAt  DateTime?
+  
+  // 使用量制限
+  dailyConversationCount Int     @default(0)
+  lastConversationDate   DateTime?
+  
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   personas     Persona[]
+  usageLogs    UsageLog[]
 }
 
 model Persona {
@@ -89,4 +102,17 @@ model Conversation {
   createdAt    DateTime @default(now())
   
   @@index([personaId, createdAt])
+}
+
+// 使用量ログ
+model UsageLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String   // "conversation", "persona_create", etc.
+  metadata  String?  @db.Text
+  createdAt DateTime @default(now())
+  
+  @@index([userId, createdAt])
+  @@index([userId, action, createdAt])
 }

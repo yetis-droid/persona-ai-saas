@@ -1,0 +1,258 @@
+import express, { Request, Response } from 'express';
+import Stripe from 'stripe';
+import { PrismaClient } from '@prisma/client';
+import { authenticateToken } from '../middleware/auth';
+
+const router = express.Router();
+const prisma = new PrismaClient();
+
+// Stripe初期化
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2024-12-18.acacia',
+});
+
+const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
+
+// 価格設定
+const PREMIUM_PRICE_ID = process.env.STRIPE_PREMIUM_PRICE_ID || '';
+const PREMIUM_PRICE = 500; // 円
+
+/**
+ * チェックアウトセッションを作成
+ */
+router.post('/create-checkout-session', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'ユーザーが見つかりません' });
+    }
+
+    // すでにプレミアムユーザーの場合
+    if (user.subscriptionTier === 'premium' && user.subscriptionStatus === 'active') {
+      return res.status(400).json({ error: 'すでにプレミアムプランに加入しています' });
+    }
+
+    // Stripeカスタマーを作成または取得
+    let customerId = user.stripeCustomerId;
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: {
+          userId: user.id,
+        },
+      });
+      customerId = customer.id;
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { stripeCustomerId: customerId },
+      });
+    }
+
+    // チェックアウトセッションを作成
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'jpy',
+            product_data: {
+              name: 'Persona AI プレミアムプラン',
+              description: '1日100回会話、人格3個まで、LINE連携対応',
+            },
+            unit_amount: PREMIUM_PRICE,
+            recurring: {
+              interval: 'month',
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: `${process.env.FRONTEND_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}&success=true`,
+      cancel_url: `${process.env.FRONTEND_URL}/dashboard?canceled=true`,
+      metadata: {
+        userId: user.id,
+      },
+    });
+
+    res.json({ url: session.url });
+  } catch (error: any) {
+    console.error('Create checkout session error:', error);
+    res.status(500).json({ error: 'チェックアウトセッションの作成に失敗しました' });
+  }
+});
+
+/**
+ * サブスクリプションをキャンセル
+ */
+router.post('/cancel-subscription', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.stripeSubscriptionId) {
+      return res.status(404).json({ error: 'サブスクリプションが見つかりません' });
+    }
+
+    // Stripeでキャンセル（期間終了時にキャンセル）
+    await stripe.subscriptions.update(user.stripeSubscriptionId, {
+      cancel_at_period_end: true,
+    });
+
+    res.json({ message: 'サブスクリプションをキャンセルしました。期間終了時に無効化されます。' });
+  } catch (error: any) {
+    console.error('Cancel subscription error:', error);
+    res.status(500).json({ error: 'サブスクリプションのキャンセルに失敗しました' });
+  }
+});
+
+/**
+ * カスタマーポータルセッションを作成
+ */
+router.post('/customer-portal', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.stripeCustomerId) {
+      return res.status(404).json({ error: 'Stripeカスタマーが見つかりません' });
+    }
+
+    // カスタマーポータルセッションを作成
+    const session = await stripe.billingPortal.sessions.create({
+      customer: user.stripeCustomerId,
+      return_url: `${process.env.FRONTEND_URL}/dashboard`,
+    });
+
+    res.json({ url: session.url });
+  } catch (error: any) {
+    console.error('Customer portal error:', error);
+    res.status(500).json({ error: 'カスタマーポータルの作成に失敗しました' });
+  }
+});
+
+/**
+ * Stripe Webhook
+ */
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req: Request, res: Response) => {
+  const sig = req.headers['stripe-signature'] as string;
+
+  try {
+    const event = stripe.webhooks.constructEvent(req.body, sig, WEBHOOK_SECRET);
+
+    // イベントタイプ別の処理
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const userId = session.metadata?.userId;
+
+        if (userId && session.subscription) {
+          await prisma.user.update({
+            where: { id: userId },
+            data: {
+              subscriptionTier: 'premium',
+              stripeSubscriptionId: session.subscription as string,
+              subscriptionStatus: 'active',
+            },
+          });
+        }
+        break;
+      }
+
+      case 'customer.subscription.updated': {
+        const subscription = event.data.object as Stripe.Subscription;
+        const customerId = subscription.customer as string;
+
+        const user = await prisma.user.findFirst({
+          where: { stripeCustomerId: customerId },
+        });
+
+        if (user) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              subscriptionStatus: subscription.status === 'active' ? 'active' : 'inactive',
+              subscriptionEndsAt: subscription.cancel_at
+                ? new Date(subscription.cancel_at * 1000)
+                : null,
+            },
+          });
+        }
+        break;
+      }
+
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object as Stripe.Subscription;
+        const customerId = subscription.customer as string;
+
+        const user = await prisma.user.findFirst({
+          where: { stripeCustomerId: customerId },
+        });
+
+        if (user) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              subscriptionTier: 'free',
+              subscriptionStatus: 'canceled',
+              stripeSubscriptionId: null,
+            },
+          });
+        }
+        break;
+      }
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    res.json({ received: true });
+  } catch (error: any) {
+    console.error('Webhook error:', error);
+    res.status(400).send(`Webhook Error: ${error.message}`);
+  }
+});
+
+/**
+ * サブスクリプション情報を取得
+ */
+router.get('/subscription', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        subscriptionTier: true,
+        subscriptionStatus: true,
+        subscriptionEndsAt: true,
+        dailyConversationCount: true,
+        lastConversationDate: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'ユーザーが見つかりません' });
+    }
+
+    res.json(user);
+  } catch (error: any) {
+    console.error('Get subscription error:', error);
+    res.status(500).json({ error: 'サブスクリプション情報の取得に失敗しました' });
+  }
+});
+
+export default router;
