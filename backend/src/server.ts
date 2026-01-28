@@ -23,7 +23,11 @@ const limiter = rateLimit({
 
 // ミドルウェア
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'https://5173-iv30mcnq8rixy3ytf59wn-2e77fc33.sandbox.novita.ai',
+    /\.sandbox\.novita\.ai$/
+  ],
   credentials: true
 }));
 app.use(express.json());
