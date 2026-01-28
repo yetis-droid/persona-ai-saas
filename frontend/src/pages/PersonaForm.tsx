@@ -492,27 +492,123 @@ const PersonaForm: React.FC = () => {
               <div className="space-y-6">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">確認</h2>
                 
-                <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
-                  <h3 className="font-semibold text-gray-900 mb-4">入力内容のプレビュー</h3>
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 p-8 rounded-xl shadow-inner">
+                  <h3 className="font-bold text-xl text-gray-900 mb-6 flex items-center">
+                    <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    入力内容のプレビュー
+                  </h3>
                   
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <span className="font-medium text-gray-700">活動ジャンル:</span> {formData.genre}
+                  {/* 基本情報 */}
+                  <div className="mb-6">
+                    <h4 className="font-bold text-lg text-gray-800 mb-3 border-b-2 border-blue-300 pb-2">基本情報</h4>
+                    <div className="bg-white p-5 rounded-lg shadow-sm space-y-3 text-sm">
+                      <div>
+                        <span className="font-semibold text-gray-600">活動ジャンル:</span>
+                        <span className="ml-2 text-gray-900">{formData.genre || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">一言説明:</span>
+                        <span className="ml-2 text-gray-900">{formData.oneLiner || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">呼ばれたい名前:</span>
+                        <span className="ml-2 text-gray-900">{formData.creatorCallname || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">ファンの呼び方:</span>
+                        <span className="ml-2 text-gray-900">{formData.fanCallname || '（未入力）'}</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-medium text-gray-700">一言説明:</span> {formData.oneLiner}
+                  </div>
+
+                  {/* 話し方 */}
+                  <div className="mb-6">
+                    <h4 className="font-bold text-lg text-gray-800 mb-3 border-b-2 border-blue-300 pb-2">話し方</h4>
+                    <div className="bg-white p-5 rounded-lg shadow-sm space-y-3 text-sm">
+                      <div>
+                        <span className="font-semibold text-gray-600">口調:</span>
+                        <span className="ml-2 text-gray-900">{formData.tone || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">丁寧度:</span>
+                        <span className="ml-2 text-gray-900">{formData.politenessLevel ? `${formData.politenessLevel}/5` : '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">絵文字の使用:</span>
+                        <span className="ml-2 text-gray-900">{formData.emojiUsage || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">返信の長さ:</span>
+                        <span className="ml-2 text-gray-900">{formData.replyLength || '（未入力）'}</span>
+                      </div>
+                      {formData.phrasingExamples && (
+                        <div>
+                          <span className="font-semibold text-gray-600">言い回し例:</span>
+                          <p className="ml-2 text-gray-900 mt-1 whitespace-pre-wrap">{formData.phrasingExamples}</p>
+                        </div>
+                      )}
+                      {formData.bannedPhrases && (
+                        <div>
+                          <span className="font-semibold text-gray-600">使わない表現:</span>
+                          <p className="ml-2 text-gray-900 mt-1 whitespace-pre-wrap">{formData.bannedPhrases}</p>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <span className="font-medium text-gray-700">呼ばれたい名前:</span> {formData.creatorCallname}
+                  </div>
+
+                  {/* 距離感 */}
+                  <div className="mb-6">
+                    <h4 className="font-bold text-lg text-gray-800 mb-3 border-b-2 border-blue-300 pb-2">距離感</h4>
+                    <div className="bg-white p-5 rounded-lg shadow-sm space-y-3 text-sm">
+                      <div>
+                        <span className="font-semibold text-gray-600">関係性スタイル:</span>
+                        <span className="ml-2 text-gray-900">{formData.relationshipStyle || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">雑談への対応:</span>
+                        <span className="ml-2 text-gray-900">{formData.smalltalkLevel || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">サポート範囲:</span>
+                        <span className="ml-2 text-gray-900">{formData.supportScope || '（未入力）'}</span>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-600">拒否スタイル:</span>
+                        <span className="ml-2 text-gray-900">{formData.refusalStyle || '（未入力）'}</span>
+                      </div>
+                      {formData.boundaries && (
+                        <div>
+                          <span className="font-semibold text-gray-600">境界線:</span>
+                          <p className="ml-2 text-gray-900 mt-1 whitespace-pre-wrap">{formData.boundaries}</p>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <span className="font-medium text-gray-700">ファンの呼び方:</span> {formData.fanCallname}
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">口調:</span> {formData.tone}
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">丁寧度:</span> {formData.politenessLevel}/5
+                  </div>
+
+                  {/* 世界観 */}
+                  <div className="mb-6">
+                    <h4 className="font-bold text-lg text-gray-800 mb-3 border-b-2 border-blue-300 pb-2">世界観</h4>
+                    <div className="bg-white p-5 rounded-lg shadow-sm space-y-3 text-sm">
+                      {formData.worldKeywords && (
+                        <div>
+                          <span className="font-semibold text-gray-600">キーワード:</span>
+                          <p className="ml-2 text-gray-900 mt-1 whitespace-pre-wrap">{formData.worldKeywords}</p>
+                        </div>
+                      )}
+                      {formData.coreValues && (
+                        <div>
+                          <span className="font-semibold text-gray-600">コア価値観:</span>
+                          <p className="ml-2 text-gray-900 mt-1 whitespace-pre-wrap">{formData.coreValues}</p>
+                        </div>
+                      )}
+                      {formData.consistencyRule && (
+                        <div>
+                          <span className="font-semibold text-gray-600">一貫性ルール:</span>
+                          <p className="ml-2 text-gray-900 mt-1 whitespace-pre-wrap">{formData.consistencyRule}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
