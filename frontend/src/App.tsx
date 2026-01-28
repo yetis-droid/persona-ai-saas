@@ -9,6 +9,7 @@ import Chat from './pages/Chat';
 import Conversations from './pages/Conversations';
 import Settings from './pages/Settings';
 import Terms from './pages/Terms';
+import Pricing from './pages/Pricing';
 
 // 認証必須ルート
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/pricing" element={<Pricing />} />
         
         {/* 認証必須ルート */}
         <Route path="/dashboard" element={

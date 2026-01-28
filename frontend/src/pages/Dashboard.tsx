@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import api from '../utils/api';
-import { Persona, DashboardStats } from '../types';
+import { Persona, DashboardStats, UsageStats } from '../types';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 
@@ -15,11 +15,12 @@ const Dashboard: React.FC = () => {
   const [personas, setPersonas] = useState<Persona[]>([]);
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     loadPersonas();
+    loadUsageStats();
   }, []);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const Dashboard: React.FC = () => {
       
       setLoading(false);
     } catch (err: any) {
-      setError(err.response?.data?.error || '人格一覧の取得に失敗しました');
+      console.error('Failed to load personas:', err);
       setLoading(false);
     }
   };
@@ -54,6 +55,15 @@ const Dashboard: React.FC = () => {
       setStats(response.data);
     } catch (err: any) {
       console.error('Stats load error:', err);
+    }
+  };
+
+  const loadUsageStats = async () => {
+    try {
+      const response = await api.get('/api/subscription/usage');
+      setUsageStats(response.data);
+    } catch (err: any) {
+      console.error('Usage stats load error:', err);
     }
   };
 
@@ -278,6 +288,85 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* 使用状況カード */}
+            {usageStats && (
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-100 rounded-2xl shadow-xl border border-indigo-200/50 p-8 mb-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900">今日の使用状況</h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        プラン: <span className="font-semibold">{usageStats.plan === 'premium' ? 'プレミアム' : '無料'}</span>
+                      </p>
+                    </div>
+                  </div>
+                  {usageStats.plan === 'free' && (
+                    <Link
+                      to="/pricing"
+                      className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-medium flex items-center space-x-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                      </svg>
+                      <span>アップグレード</span>
+                    </Link>
+                  )}
+                </div>
+
+                {/* プログレスバー */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700 font-medium">今日の会話数</span>
+                    <span className="text-2xl font-bold text-indigo-900">
+                      {usageStats.todayCount} / {usageStats.dailyLimit}
+                    </span>
+                  </div>
+                  <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`absolute left-0 top-0 h-full transition-all duration-500 ${
+                        usageStats.isLimited
+                          ? 'bg-gradient-to-r from-red-500 to-red-600'
+                          : 'bg-gradient-to-r from-indigo-500 to-purple-600'
+                      }`}
+                      style={{ width: `${Math.min((usageStats.todayCount / usageStats.dailyLimit) * 100, 100)}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">
+                      残り: <span className="font-semibold text-gray-900">{usageStats.dailyLimit - usageStats.todayCount}回</span>
+                    </span>
+                    <span className="text-gray-600">
+                      使用率: <span className="font-semibold text-gray-900">
+                        {Math.round((usageStats.todayCount / usageStats.dailyLimit) * 100)}%
+                      </span>
+                    </span>
+                  </div>
+
+                  {/* 制限超過警告 */}
+                  {usageStats.isLimited && (
+                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                      <div className="flex items-start space-x-3">
+                        <svg className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div>
+                          <p className="font-semibold text-red-900">今日の制限に達しました</p>
+                          <p className="text-sm text-red-700 mt-1">
+                            明日の0時にリセットされます。今すぐもっと会話したい場合は、プレミアムプランへのアップグレードをご検討ください。
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* 統計情報 */}
             {stats && (

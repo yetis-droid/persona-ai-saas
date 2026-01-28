@@ -165,11 +165,11 @@ router.post(
  */
 router.get('/:id', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const personaId = String(req.params.id);
 
     const persona = await prisma.persona.findFirst({
       where: {
-        id,
+        id: personaId,
         userId: req.user!.userId
       }
     });
@@ -192,13 +192,13 @@ router.get('/:id', authenticate, async (req: Request, res: Response): Promise<vo
  */
 router.put('/:id', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const personaId = String(req.params.id);
     const formData = req.body;
 
     // 所有権チェック
     const existingPersona = await prisma.persona.findFirst({
       where: {
-        id,
+        id: personaId,
         userId: req.user!.userId
       }
     });
@@ -213,7 +213,7 @@ router.put('/:id', authenticate, async (req: Request, res: Response): Promise<vo
 
     // 人格を更新
     const persona = await prisma.persona.update({
-      where: { id },
+      where: { id: personaId },
       data: {
         genre: formData.genre,
         oneLiner: formData.oneLiner,
@@ -257,12 +257,12 @@ router.put('/:id', authenticate, async (req: Request, res: Response): Promise<vo
  */
 router.delete('/:id', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const personaId = String(req.params.id);
 
     // 所有権チェック
     const persona = await prisma.persona.findFirst({
       where: {
-        id,
+        id: personaId,
         userId: req.user!.userId
       }
     });
@@ -274,7 +274,7 @@ router.delete('/:id', authenticate, async (req: Request, res: Response): Promise
 
     // 人格削除（関連する会話も自動削除される）
     await prisma.persona.delete({
-      where: { id }
+      where: { id: personaId }
     });
 
     res.json({ message: '人格を削除しました' });

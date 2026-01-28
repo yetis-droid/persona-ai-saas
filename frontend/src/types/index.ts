@@ -4,6 +4,17 @@ export interface User {
   email: string;
   name: string | null;
   createdAt?: string;
+  plan?: 'free' | 'premium';
+  stripeCustomerId?: string | null;
+  stripeSubscriptionId?: string | null;
+}
+
+// 使用状況型
+export interface UsageStats {
+  todayCount: number;
+  dailyLimit: number;
+  plan: 'free' | 'premium';
+  isLimited: boolean;
 }
 
 // Persona型

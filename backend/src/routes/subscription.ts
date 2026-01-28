@@ -1,14 +1,14 @@
 import express, { Request, Response } from 'express';
 import Stripe from 'stripe';
 import { PrismaClient } from '@prisma/client';
-import { authenticateToken } from '../middleware/auth';
+import { authenticate } from '../middleware/auth';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // Stripe初期化
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-12-15.clover',
 });
 
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
@@ -20,7 +20,7 @@ const PREMIUM_PRICE = 500; // 円
 /**
  * チェックアウトセッションを作成
  */
-router.post('/create-checkout-session', authenticateToken, async (req: Request, res: Response) => {
+router.post('/create-checkout-session', authenticate, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
 
@@ -92,7 +92,7 @@ router.post('/create-checkout-session', authenticateToken, async (req: Request, 
 /**
  * サブスクリプションをキャンセル
  */
-router.post('/cancel-subscription', authenticateToken, async (req: Request, res: Response) => {
+router.post('/cancel-subscription', authenticate, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
 
@@ -119,7 +119,7 @@ router.post('/cancel-subscription', authenticateToken, async (req: Request, res:
 /**
  * カスタマーポータルセッションを作成
  */
-router.post('/customer-portal', authenticateToken, async (req: Request, res: Response) => {
+router.post('/customer-portal', authenticate, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
 
@@ -229,7 +229,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req: R
 /**
  * サブスクリプション情報を取得
  */
-router.get('/subscription', authenticateToken, async (req: Request, res: Response) => {
+router.get('/subscription', authenticate, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
 

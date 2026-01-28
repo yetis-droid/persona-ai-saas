@@ -192,12 +192,12 @@ router.put(
         return;
       }
 
-      const { id } = req.params;
+      const conversationId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
       const { rating } = req.body;
 
       // 会話の存在確認と所有権チェック
       const conversation = await prisma.conversation.findFirst({
-        where: { id },
+        where: { id: conversationId },
         include: { persona: true }
       });
 
@@ -213,7 +213,7 @@ router.put(
 
       // 評価更新
       const updatedConversation = await prisma.conversation.update({
-        where: { id },
+        where: { id: conversationId },
         data: { rating: parseInt(rating) }
       });
 

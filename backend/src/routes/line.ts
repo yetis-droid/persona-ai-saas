@@ -54,7 +54,7 @@ async function sendLineReply(
  */
 router.post('/webhook/:personaId', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { personaId } = req.params;
+    const personaId = Array.isArray(req.params.personaId) ? req.params.personaId[0] : req.params.personaId;
 
     // 1. 人格取得
     const persona = await prisma.persona.findUnique({

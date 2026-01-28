@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Persona } from '../types';
+import { Persona, UsageStats } from '../types';
 import api from '../utils/api';
+import UsageLimitModal from '../components/UsageLimitModal';
 
 const Chat: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,10 +11,13 @@ const Chat: React.FC = () => {
   const [conversations, setConversations] = useState<Array<{ role: 'user' | 'ai'; content: string; isNgDetected?: boolean }>>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
+  const [showUsageLimitModal, setShowUsageLimitModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadPersona();
+    loadUsageStats();
   }, [id]);
 
   useEffect(() => {
@@ -30,6 +34,15 @@ const Chat: React.FC = () => {
       setPersona(response.data.persona);
     } catch (err: any) {
       setError(err.response?.data?.error || '人格の取得に失敗しました');
+    }
+  };
+
+  const loadUsageStats = async () => {
+    try {
+      const response = await api.get('/api/subscription/usage');
+      setUsageStats(response.data);
+    } catch (err: any) {
+      console.error('Usage stats load error:', err);
     }
   };
 
@@ -56,8 +69,20 @@ const Chat: React.FC = () => {
 
       // AI返信を表示
       setConversations(prev => [...prev, { role: 'ai', content: reply, isNgDetected }]);
+      
+      // 使用状況を更新
+      await loadUsageStats();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'メッセージの送信に失敗しました');
+      const errorMessage = err.response?.data?.error || 'メッセージの送信に失敗しました';
+      
+      // 使用制限エラーの場合はモーダルを表示
+      if (err.response?.status === 429 || errorMessage.includes('制限')) {
+        setShowUsageLimitModal(true);
+        await loadUsageStats(); // 使用状況を更新
+      } else {
+        setError(errorMessage);
+      }
+      
       // エラーの場合は最後のユーザーメッセージを削除
       setConversations(prev => prev.slice(0, -1));
     } finally {
@@ -240,6 +265,17 @@ const Chat: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* 使用制限モーダル */}
+      {usageStats && (
+        <UsageLimitModal
+          isOpen={showUsageLimitModal}
+          onClose={() => setShowUsageLimitModal(false)}
+          todayCount={usageStats.todayCount}
+          dailyLimit={usageStats.dailyLimit}
+          plan={usageStats.plan}
+        />
+      )}
     </div>
   );
 };
