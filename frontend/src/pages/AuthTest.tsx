@@ -10,7 +10,7 @@ const AuthTest: React.FC = () => {
   const handleLogin = async () => {
     try {
       console.log('🔐 Sending login request...');
-      const response = await axios.post('http://localhost:3000/api/auth/login', {
+      const response = await axios.post('/api/auth/login', {
         email,
         password
       });
@@ -47,7 +47,7 @@ const AuthTest: React.FC = () => {
       const token = localStorage.getItem('token');
       console.log('🔍 Testing API with token:', token?.substring(0, 50));
       
-      const response = await axios.get('http://localhost:3000/api/personas', {
+      const response = await axios.get('/api/personas', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
