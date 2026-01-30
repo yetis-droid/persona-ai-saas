@@ -21,12 +21,28 @@ const Login: React.FC = () => {
     setError('');
 
     try {
+      console.log('🔐 Login - Submitting credentials...');
       const response = await api.post('/api/auth/login', data);
-      const { user, token } = response.data;
+      console.log('✅ Login - Response received:', response.data);
       
+      const { user, token } = response.data;
+      console.log('🔐 Login - User:', user);
+      console.log('🔐 Login - Token (first 50 chars):', token ? token.substring(0, 50) + '...' : 'null');
+      
+      console.log('📝 Login - Calling setAuth...');
       setAuth(user, token);
+      
+      // LocalStorageを確認
+      console.log('🗄️ Login - localStorage after setAuth:', {
+        token: localStorage.getItem('token') ? localStorage.getItem('token')!.substring(0, 50) + '...' : 'null',
+        user: localStorage.getItem('user')
+      });
+      
+      console.log('🚀 Login - Navigating to dashboard...');
       navigate('/dashboard');
     } catch (err: any) {
+      console.error('❌ Login - Error:', err);
+      console.error('❌ Login - Response:', err.response);
       setError(err.response?.data?.error || 'ログインに失敗しました');
     } finally {
       setLoading(false);

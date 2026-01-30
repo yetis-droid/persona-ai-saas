@@ -38,7 +38,12 @@ export const authenticate = async (
       }
     }
 
+    console.log('[Auth] Request path:', req.path);
+    console.log('[Auth] Token found:', token ? `${token.substring(0, 20)}...` : 'null');
+    console.log('[Auth] Auth header:', req.headers.authorization ? 'present' : 'missing');
+
     if (!token) {
+      console.log('[Auth] No token provided');
       res.status(401).json({ error: '認証が必要です' });
       return;
     }
@@ -46,10 +51,11 @@ export const authenticate = async (
     // トークンを検証
     const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
     req.user = decoded;
+    console.log('[Auth] Token verified for user:', decoded.email);
     
     next();
   } catch (error) {
-    console.error('Authentication error:', error);
+    console.error('[Auth] Authentication error:', error);
     res.status(401).json({ error: '無効なトークンです' });
   }
 };

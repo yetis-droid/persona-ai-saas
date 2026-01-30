@@ -13,9 +13,16 @@ const Debug: React.FC = () => {
 
   const testAPI = async () => {
     try {
+      const token = localStorage.getItem('token');
+      console.log('🔍 Debug Page - API Test Token:', token ? token.substring(0, 50) + '...' : 'null');
+      console.log('🔍 Debug Page - Cookies:', document.cookie);
+      
       const response = await api.get('/api/personas');
+      console.log('✅ Debug Page - API Success:', response.data);
       setApiTest({ success: true, data: response.data });
     } catch (err: any) {
+      console.error('❌ Debug Page - API Error:', err);
+      console.error('❌ Debug Page - Response:', err.response);
       setApiTest({ success: false, error: err.response?.data || err.message });
       setError(err.response?.data?.error || err.message);
     }
