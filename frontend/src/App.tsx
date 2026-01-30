@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import Terms from './pages/Terms';
 import Pricing from './pages/Pricing';
 import Debug from './pages/Debug';
+import AuthTest from './pages/AuthTest';
 
 // 認証必須ルート
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/debug" element={<Debug />} />
+        <Route path="/auth-test" element={<AuthTest />} />
         
         {/* 認証必須ルート */}
         <Route path="/dashboard" element={
