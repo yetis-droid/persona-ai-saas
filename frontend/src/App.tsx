@@ -14,6 +14,7 @@ import Debug from './pages/Debug';
 import AuthTest from './pages/AuthTest';
 import QuickLogin from './pages/QuickLogin';
 import LoginDebug from './pages/LoginDebug';
+import StorageTest from './pages/StorageTest';
 
 // 認証必須ルート
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -81,6 +82,7 @@ function App() {
         <Route path="/auth-test" element={<AuthTest />} />
         <Route path="/quick-login" element={<QuickLogin />} />
         <Route path="/login-debug" element={<LoginDebug />} />
+        <Route path="/storage-test" element={<StorageTest />} />
         
         {/* 認証必須ルート */}
         <Route path="/dashboard" element={
