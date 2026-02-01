@@ -15,8 +15,20 @@ import AuthTest from './pages/AuthTest';
 
 // 認証必須ルート
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+  const { isAuthenticated, loadAuth } = useAuthStore();
+  
+  // 初回レンダリング時にlocalStorageから認証情報を読み込む
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      loadAuth();
+    }
+  }, []);
+  
+  // localStorageに直接トークンがあるかチェック
+  const hasToken = typeof window !== 'undefined' && localStorage.getItem('token');
+  
+  // トークンがあるか、またはisAuthenticatedがtrueならOK
+  return (hasToken || isAuthenticated) ? <>{children}</> : <Navigate to="/login" />;
 };
 
 function App() {
