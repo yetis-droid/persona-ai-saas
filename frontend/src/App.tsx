@@ -12,23 +12,52 @@ import Terms from './pages/Terms';
 import Pricing from './pages/Pricing';
 import Debug from './pages/Debug';
 import AuthTest from './pages/AuthTest';
+import QuickLogin from './pages/QuickLogin';
 
 // 認証必須ルート
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loadAuth } = useAuthStore();
+  const [isChecking, setIsChecking] = React.useState(true);
   
-  // 初回レンダリング時にlocalStorageから認証情報を読み込む
   React.useEffect(() => {
-    if (!isAuthenticated) {
-      loadAuth();
-    }
+    // 認証情報を読み込む
+    loadAuth();
+    
+    // 少し待ってからチェック完了
+    setTimeout(() => {
+      setIsChecking(false);
+    }, 100);
   }, []);
   
-  // localStorageに直接トークンがあるかチェック
-  const hasToken = typeof window !== 'undefined' && localStorage.getItem('token');
+  // チェック中はローディング表示
+  if (isChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">認証確認中...</p>
+        </div>
+      </div>
+    );
+  }
   
-  // トークンがあるか、またはisAuthenticatedがtrueならOK
-  return (hasToken || isAuthenticated) ? <>{children}</> : <Navigate to="/login" />;
+  // localStorageに直接トークンがあるかチェック
+  const token = localStorage.getItem('token');
+  
+  console.log('🔐 PrivateRoute check:', {
+    isAuthenticated,
+    hasToken: !!token,
+    token: token?.substring(0, 50)
+  });
+  
+  // トークンがない場合はログインへ
+  if (!token) {
+    console.log('❌ No token found, redirecting to login');
+    return <Navigate to="/login" replace />;
+  }
+  
+  // トークンがあれば子要素をレンダリング
+  return <>{children}</>;
 };
 
 function App() {
@@ -49,6 +78,7 @@ function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/debug" element={<Debug />} />
         <Route path="/auth-test" element={<AuthTest />} />
+        <Route path="/quick-login" element={<QuickLogin />} />
         
         {/* 認証必須ルート */}
         <Route path="/dashboard" element={
