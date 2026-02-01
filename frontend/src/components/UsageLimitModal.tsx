@@ -6,7 +6,7 @@ interface UsageLimitModalProps {
   onClose: () => void;
   todayCount: number;
   dailyLimit: number;
-  plan: 'free' | 'premium';
+  plan: string; // 'free' | 'premium' から string に変更
 }
 
 const UsageLimitModal: React.FC<UsageLimitModalProps> = ({

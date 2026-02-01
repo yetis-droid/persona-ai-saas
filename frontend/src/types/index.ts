@@ -12,9 +12,9 @@ export interface User {
 // 使用状況型
 export interface UsageStats {
   todayCount: number;
-  dailyLimit: number;
-  plan: 'free' | 'premium';
-  isLimited: boolean;
+  limit: number; // dailyLimit から limit に変更
+  planName: string; // plan から planName に変更
+  resetTime: string; // リセット時刻を追加
 }
 
 // Persona型

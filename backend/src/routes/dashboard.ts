@@ -126,4 +126,41 @@ router.get('/', authenticate, async (req: Request, res: Response): Promise<void>
   }
 });
 
+/**
+ * GET /api/dashboard/usage
+ * 使用状況取得（サブスクリプション機能が無効な場合の簡易版）
+ */
+router.get('/usage', authenticate, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.user!.userId;
+    
+    // 今日の日付（00:00:00）を取得
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // 今日の会話数をカウント
+    const todayCount = await prisma.conversation.count({
+      where: {
+        persona: {
+          userId
+        },
+        createdAt: {
+          gte: today
+        }
+      }
+    });
+    
+    // 簡易的なプラン情報（Stripe機能が無効なのでデフォルト値）
+    res.json({
+      todayCount,
+      limit: 10, // 無料プランのデフォルト制限
+      planName: 'Free',
+      resetTime: new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString() // 明日の00:00
+    });
+  } catch (error: any) {
+    console.error('Usage stats error:', error);
+    res.status(500).json({ error: '使用状況の取得中にエラーが発生しました' });
+  }
+});
+
 export default router;

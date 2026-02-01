@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
 
   const loadUsageStats = async () => {
     try {
-      const response = await api.get('/api/subscription/usage');
+      const response = await api.get('/api/dashboard/usage');
       setUsageStats(response.data);
     } catch (err: any) {
       console.error('Usage stats load error:', err);
@@ -302,11 +302,11 @@ const Dashboard: React.FC = () => {
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900">今日の使用状況</h3>
                       <p className="text-sm text-gray-600 mt-1">
-                        プラン: <span className="font-semibold">{usageStats.plan === 'premium' ? 'プレミアム' : '無料'}</span>
+                        プラン: <span className="font-semibold">{usageStats.planName === 'premium' ? 'プレミアム' : '無料'}</span>
                       </p>
                     </div>
                   </div>
-                  {usageStats.plan === 'free' && (
+                  {usageStats.planName === 'free' && (
                     <Link
                       to="/pricing"
                       className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-medium flex items-center space-x-2"
@@ -324,32 +324,32 @@ const Dashboard: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700 font-medium">今日の会話数</span>
                     <span className="text-2xl font-bold text-indigo-900">
-                      {usageStats.todayCount} / {usageStats.dailyLimit}
+                      {usageStats.todayCount} / {usageStats.limit}
                     </span>
                   </div>
                   <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
                     <div
                       className={`absolute left-0 top-0 h-full transition-all duration-500 ${
-                        usageStats.isLimited
+                        (usageStats.todayCount >= usageStats.limit)
                           ? 'bg-gradient-to-r from-red-500 to-red-600'
                           : 'bg-gradient-to-r from-indigo-500 to-purple-600'
                       }`}
-                      style={{ width: `${Math.min((usageStats.todayCount / usageStats.dailyLimit) * 100, 100)}%` }}
+                      style={{ width: `${Math.min((usageStats.todayCount / usageStats.limit) * 100, 100)}%` }}
                     />
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-600">
-                      残り: <span className="font-semibold text-gray-900">{usageStats.dailyLimit - usageStats.todayCount}回</span>
+                      残り: <span className="font-semibold text-gray-900">{usageStats.limit - usageStats.todayCount}回</span>
                     </span>
                     <span className="text-gray-600">
                       使用率: <span className="font-semibold text-gray-900">
-                        {Math.round((usageStats.todayCount / usageStats.dailyLimit) * 100)}%
+                        {Math.round((usageStats.todayCount / usageStats.limit) * 100)}%
                       </span>
                     </span>
                   </div>
 
                   {/* 制限超過警告 */}
-                  {usageStats.isLimited && (
+                  {(usageStats.todayCount >= usageStats.limit) && (
                     <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
                       <div className="flex items-start space-x-3">
                         <svg className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
