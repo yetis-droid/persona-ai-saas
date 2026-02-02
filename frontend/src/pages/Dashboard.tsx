@@ -17,6 +17,7 @@ const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     loadPersonas();
@@ -143,8 +144,37 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex">
+      {/* モバイル用ハンバーガーメニューボタン */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
+      >
+        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {mobileMenuOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* オーバーレイ（モバイルメニューが開いている時） */}
+      {mobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* サイドバー */}
-      <aside style={{ width: '288px', minWidth: '288px', maxWidth: '288px' }} className="bg-white/80 backdrop-blur-sm border-r border-gray-200/50 flex flex-col shadow-xl">
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-40
+        w-72 lg:w-72
+        bg-white/80 backdrop-blur-sm border-r border-gray-200/50
+        flex flex-col shadow-xl
+        transform transition-transform duration-300 ease-in-out
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
@@ -229,19 +259,19 @@ const Dashboard: React.FC = () => {
       </aside>
 
       {/* メインコンテンツ */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto w-full lg:w-auto">
         {selectedPersona ? (
-          <div className="p-8">
+          <div className="p-4 sm:p-6 lg:p-8">
             {/* ヘッダー */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-8 mb-6">
-              <div className="flex justify-between items-start">
-                <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-4 sm:p-6 lg:p-8 mb-6">
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+                <div className="flex items-start space-x-3 sm:space-x-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl sm:text-2xl shadow-lg flex-shrink-0">
                     {selectedPersona.creatorCallname.charAt(0)}
                   </div>
-                  <div>
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{selectedPersona.creatorCallname}</h2>
-                    <p className="text-gray-600 mt-2 text-lg">{selectedPersona.oneLiner}</p>
+                  <div className="min-w-0">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent truncate">{selectedPersona.creatorCallname}</h2>
+                    <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base lg:text-lg line-clamp-2">{selectedPersona.oneLiner}</p>
                     <div className="flex gap-2 mt-4">
                       <span className="px-4 py-1.5 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 rounded-full text-sm font-medium">
                         {selectedPersona.genre}
@@ -257,37 +287,37 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
                   <Link
                     to={`/personas/${selectedPersona.id}/chat`}
-                    className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 font-medium flex items-center space-x-2"
+                    className="flex-1 sm:flex-none px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 font-medium flex items-center justify-center space-x-2 text-sm sm:text-base"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                     <span>チャット</span>
                   </Link>
                   <Link
                     to={`/personas/${selectedPersona.id}/conversations`}
-                    className="px-5 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium"
+                    className="flex-1 sm:flex-none px-3 sm:px-5 py-2 sm:py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium text-center text-sm sm:text-base"
                   >
                     会話ログ
                   </Link>
                   <Link
                     to={`/personas/${selectedPersona.id}/settings`}
-                    className="px-5 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium"
+                    className="hidden sm:block px-3 sm:px-5 py-2 sm:py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium text-sm sm:text-base"
                   >
                     設定
                   </Link>
                   <Link
                     to="/pricing"
-                    className="px-5 py-2.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 font-medium shadow-lg shadow-yellow-500/30"
+                    className="hidden sm:block px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 font-medium shadow-lg shadow-yellow-500/30 text-sm sm:text-base"
                   >
                     料金
                   </Link>
                   <button
                     onClick={() => handleDeletePersona(selectedPersona.id)}
-                    className="px-5 py-2.5 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl hover:bg-red-100 hover:border-red-300 transition-all duration-200 font-medium"
+                    className="hidden sm:block px-3 sm:px-5 py-2 sm:py-2.5 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl hover:bg-red-100 hover:border-red-300 transition-all duration-200 font-medium text-sm sm:text-base"
                   >
                     削除
                   </button>
