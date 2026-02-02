@@ -16,6 +16,13 @@ api.interceptors.request.use(
   (config) => {
     // ローカルストレージからトークンを取得
     const token = localStorage.getItem('token');
+    console.log('📡 API Request:', {
+      method: config.method,
+      url: config.url,
+      hasToken: !!token,
+      token: token?.substring(0, 30) + '...'
+    });
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -30,7 +37,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.log('🚨 API Error Interceptor:', {
+      status: error.response?.status,
+      url: error.config?.url,
+      method: error.config?.method
+    });
+    
     if (error.response?.status === 401) {
+      console.log('❌ 401 Unauthorized - Clearing localStorage and redirecting to /login');
       // 認証エラーの場合、トークンをクリアしてログインページへ
       localStorage.removeItem('token');
       localStorage.removeItem('user');
