@@ -16,11 +16,11 @@ const anthropic = new Anthropic({
 export async function generateAIReply(
   systemPrompt: string,
   userMessage: string,
-  maxTokens: number = 1000
+  maxTokens: number = 500 // 1000 から 500 に削減
 ): Promise<string> {
   try {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-3-5-haiku-20241022', // Sonnet から Haiku に変更（92%コスト削減）
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [
