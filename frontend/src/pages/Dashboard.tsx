@@ -327,34 +327,42 @@ const Dashboard: React.FC = () => {
 
             {/* 使用状況カード */}
             {usageStats && (
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-100 rounded-2xl shadow-xl border border-indigo-200/50 p-8 mb-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-100 rounded-2xl shadow-xl border border-indigo-200/50 p-4 sm:p-6 lg:p-8 mb-6">
+                <div className="flex flex-col gap-4 mb-4 sm:mb-6">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                       </svg>
                     </div>
-                    <div>
-                      <div className="flex items-center space-x-3">
-                        <h3 className="text-2xl font-bold text-gray-900">今日の使用状況</h3>
-                        {usageStats.planName === 'premium' ? (
-                          <span className="px-4 py-1.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-sm font-bold shadow-lg flex items-center space-x-1">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <span>プレミアムプラン</span>
-                          </span>
-                        ) : (
-                          <span className="px-4 py-1.5 bg-gray-200 text-gray-700 rounded-full text-sm font-semibold">
-                            無料プラン
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2">今日の使用状況</h3>
+                      {usageStats.planName === 'premium' ? (
+                        <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-xs sm:text-sm font-bold shadow-lg gap-1">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                          <span className="whitespace-nowrap">プレミアムプラン</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm font-semibold">
+                          無料プラン
+                        </span>
+                      )}
+                      <p className="text-xs sm:text-sm text-gray-600 mt-2 leading-relaxed">
                         {usageStats.planName === 'premium' 
-                          ? '1日100回まで会話可能 • 人格3個まで作成可能 • LINE連携対応'
-                          : '1日10回まで会話可能 • 人格1個まで作成可能'
+                          ? <>
+                              <span className="block sm:inline">1日100回まで会話可能</span>
+                              <span className="hidden sm:inline"> • </span>
+                              <span className="block sm:inline">人格3個まで作成可能</span>
+                              <span className="hidden sm:inline"> • </span>
+                              <span className="block sm:inline">LINE連携対応</span>
+                            </>
+                          : <>
+                              <span className="block sm:inline">1日10回まで会話可能</span>
+                              <span className="hidden sm:inline"> • </span>
+                              <span className="block sm:inline">人格1個まで作成可能</span>
+                            </>
                         }
                       </p>
                     </div>
@@ -362,12 +370,12 @@ const Dashboard: React.FC = () => {
                   {usageStats.planName === 'free' && (
                     <Link
                       to="/pricing"
-                      className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-medium flex items-center space-x-2"
+                      className="w-full sm:w-auto sm:self-end px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-medium flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
-                      <span>アップグレード</span>
+                      <span className="whitespace-nowrap">アップグレード</span>
                     </Link>
                   )}
                 </div>
