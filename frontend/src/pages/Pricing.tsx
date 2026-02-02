@@ -78,9 +78,7 @@ const Pricing: React.FC = () => {
       setLoading(true);
       setError('');
       
-      const response = await api.post('/api/subscription/create-checkout-session', {
-        priceId: 'price_premium_monthly' // Stripeの価格ID
-      });
+      const response = await api.post('/api/subscription/create-checkout-session');
 
       // Stripeのチェックアウトページへリダイレクト
       window.location.href = response.data.url;

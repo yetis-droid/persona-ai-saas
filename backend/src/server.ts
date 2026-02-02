@@ -8,7 +8,7 @@ import personaRoutes from './routes/personas';
 import chatRoutes from './routes/chat';
 import lineRoutes from './routes/line';
 import dashboardRoutes from './routes/dashboard';
-// import subscriptionRoutes from './routes/subscription'; // Temporarily disabled - requires Stripe API key
+import subscriptionRoutes from './routes/subscription'; // Stripe設定後に有効化
 
 dotenv.config();
 
@@ -46,7 +46,7 @@ app.use('/api/personas', personaRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/line', lineRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-// app.use('/api/subscription', subscriptionRoutes); // Temporarily disabled - requires Stripe API key
+app.use('/api/subscription', subscriptionRoutes);
 
 // エラーハンドリング
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

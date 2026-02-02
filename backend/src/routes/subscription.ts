@@ -14,15 +14,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 // 価格設定
-const PREMIUM_PRICE_ID = process.env.STRIPE_PREMIUM_PRICE_ID || '';
-const PREMIUM_PRICE = 500; // 円
+const PREMIUM_PRICE_ID = process.env.STRIPE_PRICE_ID || '';
+const PREMIUM_PRICE = 980; // 円
 
 /**
  * チェックアウトセッションを作成
  */
 router.post('/create-checkout-session', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.user!.userId;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -94,7 +94,7 @@ router.post('/create-checkout-session', authenticate, async (req: Request, res: 
  */
 router.post('/cancel-subscription', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.user!.userId;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -121,7 +121,7 @@ router.post('/cancel-subscription', authenticate, async (req: Request, res: Resp
  */
 router.post('/customer-portal', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.user!.userId;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -231,7 +231,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req: R
  */
 router.get('/subscription', authenticate, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.user!.userId;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
