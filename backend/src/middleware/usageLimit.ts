@@ -26,7 +26,8 @@ export const checkUsageLimit = async (
   next: NextFunction
 ) => {
   try {
-    const userId = (req as any).userId;
+    // authミドルウェアで設定された req.user.userId を取得
+    const userId = req.user?.userId;
     
     if (!userId) {
       return res.status(401).json({ error: '認証が必要です' });
@@ -121,7 +122,12 @@ export const checkPersonaLimit = async (
   next: NextFunction
 ) => {
   try {
-    const userId = (req as any).userId;
+    // authミドルウェアで設定された req.user.userId を取得
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: '認証が必要です' });
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
