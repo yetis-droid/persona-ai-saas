@@ -287,37 +287,37 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
+                <div className="flex flex-wrap gap-2 w-full">
                   <Link
                     to={`/personas/${selectedPersona.id}/chat`}
-                    className="flex-1 sm:flex-none px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 font-medium flex items-center justify-center space-x-2 text-sm sm:text-base"
+                    className="flex-1 min-w-[140px] px-3 sm:px-4 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg font-medium flex items-center justify-center space-x-2 text-sm"
                   >
-                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                     <span>チャット</span>
                   </Link>
                   <Link
                     to={`/personas/${selectedPersona.id}/conversations`}
-                    className="flex-1 sm:flex-none px-3 sm:px-5 py-2 sm:py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium text-center text-sm sm:text-base"
+                    className="flex-1 min-w-[140px] px-3 sm:px-4 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium text-center text-sm"
                   >
                     会話ログ
                   </Link>
                   <Link
                     to={`/personas/${selectedPersona.id}/settings`}
-                    className="hidden sm:block px-3 sm:px-5 py-2 sm:py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium text-sm sm:text-base"
+                    className="flex-1 min-w-[100px] px-3 sm:px-4 py-2.5 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium text-center text-sm"
                   >
                     設定
                   </Link>
                   <Link
                     to="/pricing"
-                    className="hidden sm:block px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 font-medium shadow-lg shadow-yellow-500/30 text-sm sm:text-base"
+                    className="flex-1 min-w-[100px] px-3 sm:px-4 py-2.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 font-medium text-center text-sm"
                   >
                     料金
                   </Link>
                   <button
                     onClick={() => handleDeletePersona(selectedPersona.id)}
-                    className="hidden sm:block px-3 sm:px-5 py-2 sm:py-2.5 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl hover:bg-red-100 hover:border-red-300 transition-all duration-200 font-medium text-sm sm:text-base"
+                    className="w-full sm:w-auto px-3 sm:px-4 py-2.5 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl hover:bg-red-100 transition-all duration-200 font-medium text-sm"
                   >
                     削除
                   </button>
@@ -448,53 +448,53 @@ const Dashboard: React.FC = () => {
             {stats && (
               <>
                 {/* サマリーカード */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg p-6 border border-blue-200/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg p-4 sm:p-6 border border-blue-200/50">
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-sm font-semibold text-blue-700">総会話数</div>
                       <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                       </svg>
                     </div>
-                    <div className="text-4xl font-bold text-blue-900">{stats.totalConversations}</div>
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-900">{stats.totalConversations}</div>
                     <div className="text-xs text-blue-600 mt-2">全ての会話</div>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg p-6 border border-purple-200/50">
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-lg p-4 sm:p-6 border border-purple-200/50">
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-sm font-semibold text-purple-700">平均評価</div>
                       <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                       </svg>
                     </div>
-                    <div className="text-4xl font-bold text-purple-900">
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-900">
                       {stats.averageRating > 0 ? stats.averageRating.toFixed(1) : 'N/A'}
                     </div>
                     <div className="text-xs text-purple-600 mt-2">5段階評価</div>
                   </div>
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl shadow-lg p-6 border border-green-200/50">
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl shadow-lg p-4 sm:p-6 border border-green-200/50">
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-sm font-semibold text-green-700">Web会話</div>
                       <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <div className="text-4xl font-bold text-green-900">{stats.webConversations}</div>
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-900">{stats.webConversations}</div>
                     <div className="text-xs text-green-600 mt-2">ブラウザから</div>
                   </div>
-                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl shadow-lg p-6 border border-orange-200/50">
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl shadow-lg p-4 sm:p-6 border border-orange-200/50">
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-sm font-semibold text-orange-700">LINE会話</div>
                       <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <div className="text-4xl font-bold text-orange-900">{stats.lineConversations}</div>
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-900">{stats.lineConversations}</div>
                     <div className="text-xs text-orange-600 mt-2">LINEから</div>
                   </div>
                 </div>
 
                 {/* チャート */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-6">
                   {ratingChartData && (
                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-8">
                       <div className="flex items-center space-x-3 mb-6">
