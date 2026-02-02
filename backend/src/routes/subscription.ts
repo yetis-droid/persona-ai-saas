@@ -158,8 +158,48 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req: R
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         const userId = session.metadata?.userId;
+        const tickets = session.metadata?.tickets;
 
-        if (userId && session.subscription) {
+        // チケット購入の場合（前払い・リスクゼロ）
+        if (userId && tickets && !session.subscription) {
+          const ticketCount = parseInt(tickets);
+          const productName = session.metadata?.productName || 'チケット';
+
+          // チケット付与
+          const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              ticketBalance: true,
+              ticketPurchaseHistory: true
+            }
+          });
+
+          const newHistory = [
+            ...(Array.isArray(user?.ticketPurchaseHistory) ? user.ticketPurchaseHistory : []),
+            {
+              date: new Date().toISOString(),
+              tickets: ticketCount,
+              amount: (session.amount_total || 0) / 100,
+              sessionId: session.id,
+              productName: productName
+            }
+          ];
+
+          await prisma.user.update({
+            where: { id: userId },
+            data: {
+              ticketBalance: {
+                increment: ticketCount
+              },
+              ticketPurchaseHistory: newHistory,
+              ticketLastPurchaseAt: new Date()
+            },
+          });
+
+          console.log(`✅ Tickets granted: ${ticketCount} tickets to user ${userId}`);
+        }
+        // サブスクリプション購入の場合
+        else if (userId && session.subscription) {
           await prisma.user.update({
             where: { id: userId },
             data: {
@@ -168,6 +208,8 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req: R
               subscriptionStatus: 'active',
             },
           });
+
+          console.log(`✅ Premium subscription activated for user ${userId}`);
         }
         break;
       }

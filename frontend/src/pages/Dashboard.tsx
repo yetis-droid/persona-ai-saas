@@ -16,12 +16,14 @@ const Dashboard: React.FC = () => {
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
+  const [ticketBalance, setTicketBalance] = useState<number>(0); // チケット残高
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     loadPersonas();
     loadUsageStats();
+    loadTicketBalance(); // チケット残高読み込み
   }, []);
 
   useEffect(() => {
@@ -65,6 +67,15 @@ const Dashboard: React.FC = () => {
       setUsageStats(response.data);
     } catch (err: any) {
       console.error('Usage stats load error:', err);
+    }
+  };
+
+  const loadTicketBalance = async () => {
+    try {
+      const response = await api.get('/api/tickets/balance');
+      setTicketBalance(response.data.balance || 0);
+    } catch (err: any) {
+      console.error('Ticket balance load error:', err);
     }
   };
 
@@ -315,6 +326,17 @@ const Dashboard: React.FC = () => {
                   >
                     料金
                   </Link>
+                  <Link
+                    to="/tickets"
+                    className="flex-1 min-w-[100px] px-3 sm:px-4 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl hover:from-purple-600 hover:to-indigo-700 transition-all duration-200 font-medium text-center text-sm flex items-center justify-center gap-1"
+                  >
+                    🎫 チケット
+                    {ticketBalance > 0 && (
+                      <span className="bg-white text-purple-600 px-2 py-0.5 rounded-full text-xs font-bold">
+                        {ticketBalance}
+                      </span>
+                    )}
+                  </Link>
                   <button
                     onClick={() => handleDeletePersona(selectedPersona.id)}
                     className="w-full sm:w-auto px-3 sm:px-4 py-2.5 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl hover:bg-red-100 transition-all duration-200 font-medium text-sm"
@@ -337,18 +359,25 @@ const Dashboard: React.FC = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2">今日の使用状況</h3>
-                      {usageStats.planName === 'premium' ? (
-                        <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-xs sm:text-sm font-bold shadow-lg gap-1">
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                          <span className="whitespace-nowrap">プレミアムプラン</span>
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm font-semibold">
-                          無料プラン
-                        </span>
-                      )}
+                      <div className="flex flex-wrap gap-2 items-center">
+                        {usageStats.planName === 'premium' ? (
+                          <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-xs sm:text-sm font-bold shadow-lg gap-1">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            <span className="whitespace-nowrap">プレミアムプラン</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm font-semibold">
+                            無料プラン
+                          </span>
+                        )}
+                        {ticketBalance > 0 && (
+                          <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full text-xs sm:text-sm font-bold shadow-lg gap-1">
+                            🎫 {ticketBalance}回分チケット
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs sm:text-sm text-gray-600 mt-2 leading-relaxed">
                         {usageStats.planName === 'premium' 
                           ? <>
@@ -359,7 +388,7 @@ const Dashboard: React.FC = () => {
                               <span className="block sm:inline">LINE連携対応</span>
                             </>
                           : <>
-                              <span className="block sm:inline">1日10回まで会話可能</span>
+                              <span className="block sm:inline">1日3回まで会話可能</span>
                               <span className="hidden sm:inline"> • </span>
                               <span className="block sm:inline">人格1個まで作成可能</span>
                             </>

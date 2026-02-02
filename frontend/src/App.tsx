@@ -10,6 +10,7 @@ import Conversations from './pages/Conversations';
 import Settings from './pages/Settings';
 import Terms from './pages/Terms';
 import Pricing from './pages/Pricing';
+import Tickets from './pages/Tickets'; // チケット購入ページ
 import Debug from './pages/Debug';
 import AuthTest from './pages/AuthTest';
 import QuickLogin from './pages/QuickLogin';
@@ -94,6 +95,11 @@ function App() {
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/tickets" element={
+          <PrivateRoute>
+            <Tickets />
           </PrivateRoute>
         } />
         <Route path="/personas/new" element={

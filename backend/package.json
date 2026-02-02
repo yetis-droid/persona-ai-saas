@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^5.22.0",
     "@types/stripe": "^8.0.416",
     "bcryptjs": "^2.4.3",
@@ -26,6 +27,7 @@
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
     "google-auth-library": "^9.15.0",
+    "groq-sdk": "^0.37.0",
     "jsonwebtoken": "^9.0.2",
     "stripe": "^20.2.0"
   },

@@ -24,10 +24,11 @@ const plans: Plan[] = [
     description: 'まずは無料で試してみる',
     features: [
       '人格を1個作成可能',
-      '1日10回まで会話可能',
-      '月間300回の会話',
+      '1日3回まで会話可能',
+      '月間90回の会話',
       'Web版チャット',
       '7日間の会話履歴',
+      '広告表示あり',
     ],
     limitations: [
       'LINE連携不可',
@@ -234,6 +235,44 @@ const Pricing: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* チケットプランCTA */}
+        <div className="mt-16 max-w-4xl mx-auto">
+          <div className="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-2xl shadow-2xl p-8 text-white">
+            <div className="text-center mb-6">
+              <div className="text-5xl mb-4">🎫</div>
+              <h3 className="text-3xl font-bold mb-2">チケット制もあります！</h3>
+              <p className="text-purple-100 text-lg">
+                月額料金なし・買い切り型で、好きなときに使える
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold mb-1">¥110</div>
+                <div className="text-sm text-purple-200">10回チケット</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center border-2 border-yellow-400">
+                <div className="text-xs text-yellow-400 font-bold mb-1">🔥 人気</div>
+                <div className="text-2xl font-bold mb-1">¥440</div>
+                <div className="text-sm text-purple-200">50回チケット</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold mb-1">¥770</div>
+                <div className="text-sm text-purple-200">100回チケット</div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={() => navigate('/tickets')}
+                className="bg-white text-purple-600 px-8 py-3 rounded-xl font-bold text-lg hover:bg-purple-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                チケットを購入する
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* 追加情報 */}

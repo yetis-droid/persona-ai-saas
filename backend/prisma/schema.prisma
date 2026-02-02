@@ -28,6 +28,11 @@ model User {
   dailyConversationCount Int     @default(0)
   lastConversationDate   DateTime?
   
+  // チケットシステム（前払い・リスクゼロ）
+  ticketBalance          Int      @default(0)  // 残りチケット数
+  ticketPurchaseHistory  Json     @default("[]")  // 購入履歴 [{date, tickets, amount, sessionId}]
+  ticketLastPurchaseAt   DateTime?  // 最終購入日時
+  
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   personas     Persona[]

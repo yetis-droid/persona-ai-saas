@@ -6,12 +6,18 @@ const prisma = new PrismaClient();
 // プラン別の制限
 const PLAN_LIMITS = {
   free: {
-    dailyConversations: 10,
+    dailyConversations: 3, // 10 → 3 に変更（コスト削減）
     maxPersonas: 1,
     lineIntegration: false,
   },
   premium: {
     dailyConversations: 100,
+    maxPersonas: 3,
+    lineIntegration: true,
+  },
+  ticket: {
+    // チケット保有者は実質無制限（前払い済み）
+    dailyConversations: 999999,
     maxPersonas: 3,
     lineIntegration: true,
   },
@@ -42,8 +48,17 @@ export const checkUsageLimit = async (
       return res.status(404).json({ error: 'ユーザーが見つかりません' });
     }
 
+    // チケット優先ロジック（前払い・リスクゼロ）
+    const hasTickets = user.ticketBalance && user.ticketBalance > 0;
+    
     // プラン制限を取得
-    const limits = PLAN_LIMITS[user.subscriptionTier as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.free;
+    let limits;
+    if (hasTickets) {
+      // チケットがある場合は実質無制限（前払い済み）
+      limits = PLAN_LIMITS.ticket;
+    } else {
+      limits = PLAN_LIMITS[user.subscriptionTier as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.free;
+    }
 
     // 日付が変わったらカウンターをリセット
     const today = new Date();
@@ -67,15 +82,30 @@ export const checkUsageLimit = async (
     }
 
     // 制限チェック
-    if (user.dailyConversationCount >= limits.dailyConversations) {
-      return res.status(429).json({
-        error: '本日の会話上限に達しました',
-        limit: limits.dailyConversations,
-        used: user.dailyConversationCount,
-        message: user.subscriptionTier === 'free'
-          ? 'プレミアムプランにアップグレードすると、1日100回まで会話できます。'
-          : '明日また利用できます。',
-      });
+    if (hasTickets) {
+      // チケットがある場合は制限なし（前払い済み）
+      // チケット残高のみチェック
+      if (user.ticketBalance <= 0) {
+        return res.status(429).json({
+          error: 'チケットがありません',
+          balance: user.ticketBalance,
+          message: 'チケットを購入すると、いつでも好きなだけ会話できます。',
+          canPurchaseTickets: true
+        });
+      }
+    } else {
+      // 無料/プレミアムの場合は日次制限をチェック
+      if (user.dailyConversationCount >= limits.dailyConversations) {
+        return res.status(429).json({
+          error: '本日の会話上限に達しました',
+          limit: limits.dailyConversations,
+          used: user.dailyConversationCount,
+          message: user.subscriptionTier === 'free'
+            ? 'チケットを購入するか、プレミアムプランにアップグレードすると、もっと会話できます。'
+            : '明日また利用できます。',
+          canPurchaseTickets: true
+        });
+      }
     }
 
     // リクエストにユーザー情報と制限情報を追加
@@ -91,25 +121,58 @@ export const checkUsageLimit = async (
 };
 
 /**
- * 会話カウントを増やす
+ * 会話カウントを増やす（チケット消費を含む）
  */
 export const incrementConversationCount = async (userId: string) => {
-  await prisma.user.update({
+  // ユーザー情報取得
+  const user = await prisma.user.findUnique({
     where: { id: userId },
-    data: {
-      dailyConversationCount: {
-        increment: 1,
-      },
-      lastConversationDate: new Date(),
-    },
+    select: {
+      ticketBalance: true,
+      dailyConversationCount: true
+    }
   });
+
+  const hasTickets = user && user.ticketBalance > 0;
+
+  if (hasTickets) {
+    // チケット消費（前払い済みなのでコストゼロ）
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ticketBalance: {
+          decrement: 1
+        },
+        dailyConversationCount: {
+          increment: 1
+        },
+        lastConversationDate: new Date(),
+      },
+    });
+
+    console.log(`🎫 Ticket consumed for user ${userId}, remaining: ${(user.ticketBalance || 0) - 1}`);
+  } else {
+    // 通常の日次カウント増加
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        dailyConversationCount: {
+          increment: 1,
+        },
+        lastConversationDate: new Date(),
+      },
+    });
+  }
 
   // 使用ログを記録
   await prisma.usageLog.create({
     data: {
       userId,
       action: 'conversation',
-      metadata: JSON.stringify({ timestamp: new Date() }),
+      metadata: JSON.stringify({ 
+        timestamp: new Date(),
+        usedTicket: hasTickets 
+      }),
     },
   });
 };
