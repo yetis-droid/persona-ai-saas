@@ -134,6 +134,23 @@ router.get('/usage', authenticate, async (req: Request, res: Response): Promise<
   try {
     const userId = req.user!.userId;
     
+    // ユーザー情報を取得
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        subscriptionTier: true
+      }
+    });
+    
+    if (!user) {
+      res.status(404).json({ error: 'ユーザーが見つかりません' });
+      return;
+    }
+    
+    // プランに応じた制限を設定
+    const isPremium = user.subscriptionTier === 'premium';
+    const dailyLimit = isPremium ? 100 : 10;
+    
     // 今日の日付（00:00:00）を取得
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -150,11 +167,11 @@ router.get('/usage', authenticate, async (req: Request, res: Response): Promise<
       }
     });
     
-    // 簡易的なプラン情報（Stripe機能が無効なのでデフォルト値）
+    // プラン情報を返す
     res.json({
       todayCount,
-      limit: 10, // 無料プランのデフォルト制限
-      planName: 'Free',
+      limit: dailyLimit,
+      planName: isPremium ? 'premium' : 'free',
       resetTime: new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString() // 明日の00:00
     });
   } catch (error: any) {

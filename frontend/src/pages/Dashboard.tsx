@@ -147,7 +147,7 @@ const Dashboard: React.FC = () => {
       {/* モバイル用ハンバーガーメニューボタン */}
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
+        className="lg:hidden fixed top-4 right-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200"
       >
         <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           {mobileMenuOpen ? (
