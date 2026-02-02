@@ -108,7 +108,15 @@ router.post(
       });
 
       // 6. 会話カウントを増やす
-      await incrementConversationCount(req.user!.userId);
+      console.log('💬 Chat: Incrementing conversation count for user:', req.user?.userId);
+      console.log('💬 Chat: req.user:', req.user);
+      
+      if (!req.user?.userId) {
+        console.error('❌ Chat: req.user.userId is undefined!');
+        throw new Error('User ID is undefined');
+      }
+      
+      await incrementConversationCount(req.user.userId);
 
       res.json({
         reply: aiReply,
