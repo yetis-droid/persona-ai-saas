@@ -79,7 +79,8 @@ export const checkUsageLimit = async (
     }
 
     // リクエストにユーザー情報と制限情報を追加
-    (req as any).user = user;
+    // 注意: req.userは authミドルウェアで設定済み（{userId, email}）なので上書きしない
+    (req as any).userDetails = user;
     (req as any).limits = limits;
 
     next();
