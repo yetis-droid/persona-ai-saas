@@ -279,6 +279,12 @@ const Dashboard: React.FC = () => {
                   >
                     設定
                   </Link>
+                  <Link
+                    to="/pricing"
+                    className="px-5 py-2.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 font-medium shadow-lg shadow-yellow-500/30"
+                  >
+                    料金
+                  </Link>
                   <button
                     onClick={() => handleDeletePersona(selectedPersona.id)}
                     className="px-5 py-2.5 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl hover:bg-red-100 hover:border-red-300 transition-all duration-200 font-medium"
