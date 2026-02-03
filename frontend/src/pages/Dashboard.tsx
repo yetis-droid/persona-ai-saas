@@ -4,6 +4,9 @@ import { useAuthStore } from '../stores/authStore';
 import api from '../utils/api';
 import { Persona, DashboardStats, UsageStats } from '../types';
 import AffiliateBanners from '../components/AffiliateBanners';
+import BottomBannerAd from '../components/BottomBannerAd';
+import InterstitialAd from '../components/InterstitialAd';
+import RewardAd from '../components/RewardAd';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 
@@ -20,6 +23,10 @@ const Dashboard: React.FC = () => {
   const [ticketBalance, setTicketBalance] = useState<number>(0); // チケット残高
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // 広告の状態管理
+  const [showInterstitialAd, setShowInterstitialAd] = useState(false);
+  const [showRewardAd, setShowRewardAd] = useState(false);
 
   useEffect(() => {
     loadPersonas();
@@ -80,6 +87,14 @@ const Dashboard: React.FC = () => {
       // エラーが発生してもデフォルト値0を設定
       setTicketBalance(0);
     }
+  };
+
+  // リワード広告のハンドラー
+  const handleRewardClaimed = () => {
+    // チケット残高を+1
+    setTicketBalance((prev) => prev + 1);
+    // 実際のAPIコールは省略（本来はバックエンドで処理）
+    console.log('✅ リワード広告完了: +1チケット');
   };
 
   const handleLogout = async () => {
@@ -451,14 +466,22 @@ const Dashboard: React.FC = () => {
                         <div className="flex-1">
                           <p className="font-semibold text-red-900">無料プランの制限に達しました</p>
                           <p className="text-sm text-red-700 mt-1">
-                            無料プランは1日10回まで会話できます。明日の0時にリセットされます。
+                            無料プランは1日3回まで会話できます。明日の0時にリセットされます。
                           </p>
-                          <Link
-                            to="/pricing"
-                            className="mt-3 inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 font-medium text-sm"
-                          >
-                            プレミアムプランで1日100回まで会話する →
-                          </Link>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <button
+                              onClick={() => setShowRewardAd(true)}
+                              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-200 font-medium text-sm"
+                            >
+                              🎫 広告を見て+1チケット獲得
+                            </button>
+                            <Link
+                              to="/pricing"
+                              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 font-medium text-sm"
+                            >
+                              プレミアムプランで1日100回まで →
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -612,6 +635,29 @@ const Dashboard: React.FC = () => {
               </Link>
             </div>
           </div>
+        )}
+
+        {/* アプリ風広告（無料プランのみ） */}
+        {usageStats?.planName === 'free' && (
+          <>
+            {/* 画面下部固定バナー広告 */}
+            <BottomBannerAd />
+
+            {/* インタースティシャル広告（ポップアップ） */}
+            <InterstitialAd
+              isOpen={showInterstitialAd}
+              onClose={() => setShowInterstitialAd(false)}
+              skipDelay={5}
+            />
+
+            {/* リワード広告（報酬付き） */}
+            <RewardAd
+              isOpen={showRewardAd}
+              onClose={() => setShowRewardAd(false)}
+              onRewardClaimed={handleRewardClaimed}
+              rewardAmount={1}
+            />
+          </>
         )}
       </main>
     </div>
