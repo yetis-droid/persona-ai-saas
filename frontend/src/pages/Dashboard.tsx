@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import api from '../utils/api';
 import { Persona, DashboardStats, UsageStats } from '../types';
+import AffiliateBanners from '../components/AffiliateBanners';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 
@@ -480,6 +481,13 @@ const Dashboard: React.FC = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* 広告表示（無料プランのみ） */}
+            {usageStats?.planName === 'free' && (
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6 mb-6">
+                <AffiliateBanners />
               </div>
             )}
 
