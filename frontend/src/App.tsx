@@ -12,6 +12,7 @@ import Terms from './pages/Terms';
 import Pricing from './pages/Pricing';
 import Tickets from './pages/Tickets'; // チケット購入ページ
 import PrivacyPolicy from './pages/PrivacyPolicy'; // プライバシーポリシー
+import Admin from './pages/Admin'; // 管理者ダッシュボード
 import Debug from './pages/Debug';
 import AuthTest from './pages/AuthTest';
 import QuickLogin from './pages/QuickLogin';
@@ -97,6 +98,11 @@ function App() {
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/admin" element={
+          <PrivateRoute>
+            <Admin />
           </PrivateRoute>
         } />
         <Route path="/tickets" element={

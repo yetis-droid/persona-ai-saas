@@ -10,6 +10,7 @@ import lineRoutes from './routes/line';
 import dashboardRoutes from './routes/dashboard';
 import subscriptionRoutes from './routes/subscription';
 import ticketsRoutes from './routes/tickets'; // チケットシステム（リスクゼロ収益）
+import adminRoutes from './routes/admin'; // 管理者専用API
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use('/api/line', lineRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/tickets', ticketsRoutes); // チケットAPI（完全前払い制）
+app.use('/api/admin', adminRoutes); // 管理者専用API
 
 // エラーハンドリング
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

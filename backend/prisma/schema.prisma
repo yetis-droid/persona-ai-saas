@@ -16,6 +16,7 @@ model User {
   passwordHash String?
   googleId     String?   @unique
   name         String?
+  role         String    @default("user")  // "user" or "admin"
   
   // サブスクリプション情報
   subscriptionTier    String    @default("free")  // "free" or "premium"

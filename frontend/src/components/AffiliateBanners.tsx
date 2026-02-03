@@ -1,40 +1,36 @@
 import React from 'react';
 import SimpleBanner from './SimpleBanner';
+import { dummyBanners } from '../utils/dummyBanners';
 
 /**
  * アフィリエイトバナー広告コンポーネント
  * 
- * 使い方:
- * 1. A8.net や もしもアフィリエイト でバナー広告を取得
- * 2. 画像URLとリンクURLを設定
- * 3. このコンポーネントをDashboardなどで使用
+ * 複数のバナー広告を表示
+ * 無料プランのユーザーのみ表示
  */
 
-interface AffiliateBannersProps {
-  className?: string;
-}
-
-const AffiliateBanners: React.FC<AffiliateBannersProps> = ({ className = '' }) => {
-  // ここにアフィリエイト広告のURLを設定
+const AffiliateBanners: React.FC = () => {
   const banners = [
     {
       id: 1,
-      imageUrl: 'https://via.placeholder.com/728x90/4F46E5/FFFFFF?text=Advertisement+1',
-      linkUrl: 'https://example.com/affiliate-link-1',
-      altText: '広告: サービス名1'
+      imageUrl: dummyBanners.affiliateBanner1,
+      linkUrl: 'https://example.com/canva',
+      altText: '広告: Canva Pro'
     },
     {
       id: 2,
-      imageUrl: 'https://via.placeholder.com/300x250/7C3AED/FFFFFF?text=Advertisement+2',
-      linkUrl: 'https://example.com/affiliate-link-2',
-      altText: '広告: サービス名2'
+      imageUrl: dummyBanners.affiliateBanner2,
+      linkUrl: 'https://example.com/adobe',
+      altText: '広告: Adobe Creative Cloud'
     }
   ];
 
   return (
-    <div className={`affiliate-banners space-y-6 ${className}`}>
-      <p className="text-sm text-gray-500 text-center mb-4">スポンサー広告</p>
-      
+    <div className="space-y-4">
+      <h3 className="text-sm font-semibold text-gray-600 flex items-center">
+        <span className="mr-2">📢</span>
+        スポンサー広告
+      </h3>
       {banners.map((banner) => (
         <SimpleBanner
           key={banner.id}
