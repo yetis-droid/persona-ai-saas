@@ -5,9 +5,15 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true, // true は '0.0.0.0' と同じで、すべてのホストを許可
+    host: '0.0.0.0',
     port: 5173,
     strictPort: true,
+    // サンドボックスホストを明示的に許可
+    allowedHosts: [
+      '.sandbox.novita.ai',
+      'localhost',
+      '127.0.0.1'
+    ],
     hmr: {
       protocol: 'wss',
       clientPort: 443
