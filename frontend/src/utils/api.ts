@@ -15,12 +15,27 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // ローカルストレージからトークンを取得
-    const token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
+    
+    // トークンのクリーニング（改行や空白を削除）
+    if (token) {
+      token = token.trim().replace(/\s+/g, ''); // すべての空白文字を削除
+      
+      // トークンの基本的な検証（JWTの形式チェック）
+      const jwtPattern = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/;
+      if (!jwtPattern.test(token)) {
+        console.error('❌ Invalid token format, clearing localStorage');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        token = null;
+      }
+    }
+    
     console.log('📡 API Request:', {
       method: config.method,
       url: config.url,
       hasToken: !!token,
-      token: token?.substring(0, 30) + '...'
+      tokenPreview: token ? token.substring(0, 30) + '...' : 'none'
     });
     
     if (token) {
