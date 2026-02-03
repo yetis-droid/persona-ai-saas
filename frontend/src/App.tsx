@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import Terms from './pages/Terms';
 import Pricing from './pages/Pricing';
 import Tickets from './pages/Tickets'; // チケット購入ページ
+import PrivacyPolicy from './pages/PrivacyPolicy'; // プライバシーポリシー
 import Debug from './pages/Debug';
 import AuthTest from './pages/AuthTest';
 import QuickLogin from './pages/QuickLogin';
@@ -84,6 +85,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/debug" element={<Debug />} />
         <Route path="/auth-test" element={<AuthTest />} />

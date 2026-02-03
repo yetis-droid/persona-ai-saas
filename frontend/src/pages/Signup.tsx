@@ -212,6 +212,9 @@ const Signup: React.FC = () => {
             <Link to="/terms" className="text-sm text-gray-500 hover:text-gray-700 block">
               利用規約
             </Link>
+            <Link to="/privacy" className="text-sm text-gray-500 hover:text-gray-700 block mt-2">
+              プライバシーポリシー
+            </Link>
           </div>
         </div>
       </div>
