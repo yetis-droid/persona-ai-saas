@@ -56,7 +56,7 @@ export async function generateAIReply(
     try {
       console.log('🚀 Groq API使用中（完全無料）');
       const completion = await groq.chat.completions.create({
-        model: 'llama-3.1-70b-versatile', // 高品質・高速モデル
+        model: 'llama-3.3-70b-versatile', // 最新Llama 3.3モデル
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage }
@@ -89,7 +89,7 @@ export async function generateAIReply(
     try {
       console.log('🔄 Gemini Flash使用中（バックアップ）');
       const model = gemini.getGenerativeModel({ 
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.0-flash-exp',
         generationConfig: {
           maxOutputTokens: maxTokens,
           temperature: 0.7
