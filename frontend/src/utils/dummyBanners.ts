@@ -1,6 +1,12 @@
+// UTF-8対応のbase64エンコード関数
+const utf8ToBase64 = (str: string): string => {
+  // UTF-8文字列をバイト配列に変換してからbase64エンコード
+  return btoa(unescape(encodeURIComponent(str)));
+};
+
 export const dummyBanners = {
   // 画面下部固定バナー（728x90）
-  bottomBanner: 'data:image/svg+xml;base64,' + btoa(`
+  bottomBanner: 'data:image/svg+xml;base64,' + utf8ToBase64(`
     <svg width="728" height="90" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -19,7 +25,7 @@ export const dummyBanners = {
   `),
   
   // インタースティシャル広告（300x250）
-  interstitialAd: 'data:image/svg+xml;base64,' + btoa(`
+  interstitialAd: 'data:image/svg+xml;base64,' + utf8ToBase64(`
     <svg width="300" height="250" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -38,7 +44,7 @@ export const dummyBanners = {
   `),
   
   // リワード広告（320x480）
-  rewardAd: 'data:image/svg+xml;base64,' + btoa(`
+  rewardAd: 'data:image/svg+xml;base64,' + utf8ToBase64(`
     <svg width="320" height="480" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="grad3" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -60,7 +66,7 @@ export const dummyBanners = {
   `),
   
   // アフィリエイトバナー1（468x60）
-  affiliateBanner1: 'data:image/svg+xml;base64,' + btoa(`
+  affiliateBanner1: 'data:image/svg+xml;base64,' + utf8ToBase64(`
     <svg width="468" height="60" xmlns="http://www.w3.org/2000/svg">
       <rect width="468" height="60" fill="#667eea"/>
       <text x="234" y="30" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">
@@ -73,7 +79,7 @@ export const dummyBanners = {
   `),
   
   // アフィリエイトバナー2（468x60）
-  affiliateBanner2: 'data:image/svg+xml;base64,' + btoa(`
+  affiliateBanner2: 'data:image/svg+xml;base64,' + utf8ToBase64(`
     <svg width="468" height="60" xmlns="http://www.w3.org/2000/svg">
       <rect width="468" height="60" fill="#f093fb"/>
       <text x="234" y="30" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">
