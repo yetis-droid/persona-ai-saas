@@ -17,7 +17,7 @@ module.exports = {
       name: 'persona-ai-frontend',
       cwd: '/home/user/webapp/persona-ai-saas/frontend',
       script: 'npm',
-      args: 'run dev -- --host',
+      args: 'run dev',
       env: {
         NODE_ENV: 'development',
         PORT: 5173
