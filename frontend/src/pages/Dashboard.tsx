@@ -76,6 +76,8 @@ const Dashboard: React.FC = () => {
       setTicketBalance(response.data.balance || 0);
     } catch (err: any) {
       console.error('Ticket balance load error:', err);
+      // エラーが発生してもデフォルト値0を設定
+      setTicketBalance(0);
     }
   };
 

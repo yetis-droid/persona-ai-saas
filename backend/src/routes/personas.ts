@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 import { authenticate } from '../middleware/auth';
+import { checkPersonaLimit } from '../middleware/usageLimit';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -97,6 +98,7 @@ router.get('/', authenticate, async (req: Request, res: Response): Promise<void>
 router.post(
   '/',
   authenticate,
+  checkPersonaLimit, // 人格数制限チェックを追加
   [
     body('genre').notEmpty().withMessage('活動ジャンルを入力してください'),
     body('oneLiner').notEmpty().withMessage('一言説明を入力してください'),
