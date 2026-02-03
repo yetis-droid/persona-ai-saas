@@ -56,8 +56,8 @@ router.post(
       });
 
       // トークン生成
-      const token = generateToken({ userId: user.id, email: user.email });
-      const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
+      const token = generateToken({ userId: user.id, email: user.email, role: user.role });
+      const refreshToken = generateRefreshToken({ userId: user.id, email: user.email, role: user.role });
 
       // HTTPOnlyクッキーにトークンを設定
       res.cookie('token', token, {
@@ -78,7 +78,10 @@ router.post(
         user: {
           id: user.id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          role: user.role,
+          subscriptionTier: user.subscriptionTier,
+          subscriptionStatus: user.subscriptionStatus
         },
         token
       });
@@ -129,8 +132,8 @@ router.post(
       }
 
       // トークン生成
-      const token = generateToken({ userId: user.id, email: user.email });
-      const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
+      const token = generateToken({ userId: user.id, email: user.email, role: user.role });
+      const refreshToken = generateRefreshToken({ userId: user.id, email: user.email, role: user.role });
 
       // HTTPOnlyクッキーにトークンを設定
       res.cookie('token', token, {
@@ -151,7 +154,10 @@ router.post(
         user: {
           id: user.id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          role: user.role,
+          subscriptionTier: user.subscriptionTier,
+          subscriptionStatus: user.subscriptionStatus
         },
         token
       });
@@ -217,9 +223,9 @@ router.post('/google', async (req: Request, res: Response): Promise<void> => {
       });
     }
 
-    // トークン生成
-    const token = generateToken({ userId: user.id, email: user.email });
-    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
+    // トークン生成（roleを含める）
+    const token = generateToken({ userId: user.id, email: user.email, role: user.role });
+    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email, role: user.role });
 
     // HTTPOnlyクッキーにトークンを設定
     res.cookie('token', token, {
@@ -240,7 +246,10 @@ router.post('/google', async (req: Request, res: Response): Promise<void> => {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
+        role: user.role,
+        subscriptionTier: user.subscriptionTier,
+        subscriptionStatus: user.subscriptionStatus
       },
       token
     });
