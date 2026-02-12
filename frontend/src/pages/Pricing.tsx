@@ -44,6 +44,7 @@ const plans: Plan[] = [
     badge: 'おすすめ',
     badgeColor: 'bg-gradient-to-r from-yellow-400 to-orange-500',
     features: [
+      '✨ 広告完全非表示（快適な体験）',
       '人格を3個まで作成可能',
       '1日100回まで会話可能',
       '月間3,000回の会話',

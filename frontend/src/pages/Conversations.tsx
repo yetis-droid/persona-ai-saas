@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Conversation } from '../types';
 import api from '../utils/api';
+import { useAuthStore } from '../stores/authStore';
+import AdBanner from '../components/AdBanner';
 
 const Conversations: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuthStore();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -216,6 +219,16 @@ const Conversations: React.FC = () => {
             >
               次へ
             </button>
+          </div>
+        )}
+
+        {/* Google AdSense広告（無料プランのみ） */}
+        {user?.plan === 'free' && conversations.length > 0 && (
+          <div className="mt-8">
+            <AdBanner 
+              adSlot="3456789012"
+              format="rectangle"
+            />
           </div>
         )}
       </div>

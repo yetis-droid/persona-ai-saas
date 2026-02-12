@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import AdBanner from '../components/AdBanner';
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -202,6 +203,14 @@ const Landing: React.FC = () => {
             </button>
           </div>
         </div>
+      </section>
+
+      {/* Google AdSense広告 - CTA前 */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <AdBanner 
+          adSlot="4567890123"
+          format="horizontal"
+        />
       </section>
 
       {/* CTA */}

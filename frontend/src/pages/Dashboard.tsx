@@ -7,6 +7,7 @@ import AffiliateBanners from '../components/AffiliateBanners';
 import BottomBannerAd from '../components/BottomBannerAd';
 import InterstitialAd from '../components/InterstitialAd';
 import RewardAd from '../components/RewardAd';
+import AdBanner from '../components/AdBanner';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 
@@ -526,11 +527,21 @@ const Dashboard: React.FC = () => {
               </div>
             )}
 
-            {/* 広告表示（無料プランのみ） */}
+            {/* Google AdSense広告表示（無料プランのみ） */}
             {usageStats?.planName === 'free' && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6 mb-6">
-                <AffiliateBanners />
-              </div>
+              <>
+                {/* 横長バナー広告 */}
+                <AdBanner 
+                  adSlot="1234567890"
+                  format="horizontal"
+                  className="mb-6"
+                />
+                
+                {/* アフィリエイトバナー（既存） */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6 mb-6">
+                  <AffiliateBanners />
+                </div>
+              </>
             )}
 
             {/* 統計情報 */}

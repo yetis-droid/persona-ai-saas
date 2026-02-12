@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Persona, UsageStats } from '../types';
 import api from '../utils/api';
 import UsageLimitModal from '../components/UsageLimitModal';
+import AdBanner from '../components/AdBanner';
 
 const Chat: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -215,6 +216,16 @@ const Chat: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+          
+          {/* Google AdSense広告（無料プランのみ、会話が5つ以上ある場合） */}
+          {usageStats?.planName === 'free' && conversations.length >= 5 && (
+            <div className="my-6">
+              <AdBanner 
+                adSlot="2345678901"
+                format="rectangle"
+              />
             </div>
           )}
           
