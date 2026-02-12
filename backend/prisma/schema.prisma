@@ -18,6 +18,14 @@ model User {
   name         String?
   role         String    @default("user")  // "user" or "admin"
   
+  // なりすまし防止システム
+  isEmailVerified    Boolean   @default(false)  // メール認証済みか
+  emailVerificationToken String?  // メール認証トークン
+  emailVerifiedAt    DateTime? // 認証完了日時
+  isOfficialAccount  Boolean   @default(false)  // 公式アカウント（管理者のみ付与可能）
+  officialBadge      String?   // 公式バッジの種類（"creator", "partner", "verified"）
+  verificationLevel  Int       @default(0)  // 認証レベル 0=未認証, 1=メール認証, 2=本人確認, 3=公式
+  
   // サブスクリプション情報
   subscriptionTier    String    @default("free")  // "free" or "premium"
   stripeCustomerId    String?   @unique
@@ -89,6 +97,15 @@ model Persona {
   lineChannelSecret      String?
   
   isActive               Boolean        @default(false)
+  
+  // なりすまし防止
+  isVerified             Boolean        @default(false)  // 認証済み人格（本物）
+  verifiedBy             String?        // 認証した管理者のID
+  verifiedAt             DateTime?      // 認証日時
+  reportCount            Int            @default(0)  // 通報回数
+  isSuspended            Boolean        @default(false)  // 停止中
+  suspendedReason        String?        @db.Text
+  
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @updatedAt
   

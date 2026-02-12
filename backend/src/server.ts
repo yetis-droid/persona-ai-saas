@@ -11,6 +11,7 @@ import dashboardRoutes from './routes/dashboard';
 import subscriptionRoutes from './routes/subscription';
 import ticketsRoutes from './routes/tickets'; // チケットシステム（リスクゼロ収益）
 import adminRoutes from './routes/admin'; // 管理者専用API
+import adminSecurityRoutes from './routes/admin-security'; // セキュリティ管理（なりすまし防止）
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/tickets', ticketsRoutes); // チケットAPI（完全前払い制）
 app.use('/api/admin', adminRoutes); // 管理者専用API
+app.use('/api/admin', adminSecurityRoutes); // セキュリティ管理API
 
 // エラーハンドリング
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

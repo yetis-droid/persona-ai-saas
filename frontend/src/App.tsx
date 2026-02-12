@@ -13,6 +13,7 @@ import Pricing from './pages/Pricing';
 import Tickets from './pages/Tickets'; // チケット購入ページ
 import PrivacyPolicy from './pages/PrivacyPolicy'; // プライバシーポリシー
 import Admin from './pages/Admin'; // 管理者ダッシュボード
+import AdminSecurity from './pages/AdminSecurity'; // セキュリティ管理
 import Landing from './pages/Landing'; // ランディングページ
 import Debug from './pages/Debug';
 import AuthTest from './pages/AuthTest';
@@ -104,6 +105,11 @@ function App() {
         <Route path="/admin" element={
           <PrivateRoute>
             <Admin />
+          </PrivateRoute>
+        } />
+        <Route path="/admin/security" element={
+          <PrivateRoute>
+            <AdminSecurity />
           </PrivateRoute>
         } />
         <Route path="/tickets" element={
