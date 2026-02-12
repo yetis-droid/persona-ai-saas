@@ -1,6 +1,6 @@
 // 管理者セキュリティダッシュボード
 import React, { useState, useEffect } from 'react';
-import api from '../lib/api';
+import api from '../utils/api';
 import OfficialBadge from '../components/OfficialBadge';
 
 interface OfficialAccount {
