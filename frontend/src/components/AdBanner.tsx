@@ -98,7 +98,7 @@ const AdBanner: React.FC<AdBannerProps> = ({
         ></ins>
         
         {/* 開発環境用のダミー広告表示 */}
-        {process.env.NODE_ENV === 'development' && (
+        {import.meta.env.DEV && (
           <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
             <div className="text-gray-500 mb-2">
               <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
