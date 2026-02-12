@@ -72,9 +72,17 @@ const Dashboard: React.FC = () => {
   const loadUsageStats = async () => {
     try {
       const response = await api.get('/api/dashboard/usage');
+      console.log('📊 Usage Stats:', response.data);
       setUsageStats(response.data);
     } catch (err: any) {
       console.error('Usage stats load error:', err);
+      // エラーの場合もデフォルト値を設定して広告を表示
+      setUsageStats({
+        todayCount: 0,
+        limit: 10,
+        planName: 'free',
+        resetTime: new Date().toISOString()
+      });
     }
   };
 
