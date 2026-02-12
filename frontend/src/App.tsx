@@ -13,6 +13,7 @@ import Pricing from './pages/Pricing';
 import Tickets from './pages/Tickets'; // チケット購入ページ
 import PrivacyPolicy from './pages/PrivacyPolicy'; // プライバシーポリシー
 import Admin from './pages/Admin'; // 管理者ダッシュボード
+import Landing from './pages/Landing'; // ランディングページ
 import Debug from './pages/Debug';
 import AuthTest from './pages/AuthTest';
 import QuickLogin from './pages/QuickLogin';
@@ -131,8 +132,8 @@ function App() {
           </PrivateRoute>
         } />
         
-        {/* デフォルトリダイレクト */}
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        {/* デフォルトルート: ランディングページ */}
+        <Route path="/" element={<Landing />} />
       </Routes>
     </BrowserRouter>
   );
