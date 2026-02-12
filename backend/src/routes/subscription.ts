@@ -64,7 +64,7 @@ router.post('/create-checkout-session', authenticate, async (req: Request, res: 
             currency: 'jpy',
             product_data: {
               name: 'Persona AI プレミアムプラン',
-              description: '1日100回会話、人格3個まで、LINE連携対応',
+              description: '⚠️ NO REFUNDS - 返金不可 | 1日100回会話、人格3個まで、LINE連携対応',
             },
             unit_amount: PREMIUM_PRICE,
             recurring: {
@@ -79,6 +79,12 @@ router.post('/create-checkout-session', authenticate, async (req: Request, res: 
       cancel_url: `${process.env.FRONTEND_URL}/dashboard?canceled=true`,
       metadata: {
         userId: user.id,
+      },
+      // Stripeの決済ページに返金不可の注意書きを表示
+      custom_text: {
+        submit: {
+          message: '⚠️ 購入後の返金は一切できません (NO REFUNDS POLICY)',
+        },
       },
     });
 

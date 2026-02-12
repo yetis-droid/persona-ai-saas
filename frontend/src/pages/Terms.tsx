@@ -122,19 +122,66 @@ const Terms: React.FC = () => {
             </section>
 
             {/* 料金と返金 */}
-            <section id="payment">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">11. 料金と返金</h2>
+            <section id="payment" className="bg-red-50 p-6 rounded-lg border-2 border-red-500">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">💰 11. 料金と返金</h2>
               
-              <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-2">11.2 返金不可</h3>
-              <div className="bg-red-50 p-4 rounded">
-                <p className="font-bold text-red-700">
-                  当社は、理由の如何を問わず、既払金の返金を一切行いません：
+              <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-2">11.2 返金不可（完全版）</h3>
+              <div className="bg-white p-4 rounded">
+                <p className="font-bold text-red-700 mb-4">
+                  当社は、理由の如何を問わず、既払金の返金を一切行いません。以下、あらゆる状況における返金不可を明記します：
                 </p>
-                <ul className="list-disc list-inside space-y-1 ml-4 mt-2 text-sm">
-                  <li>サービス停止・終了</li>
-                  <li>アカウント停止・削除</li>
-                  <li>サービス品質への不満</li>
-                  <li>その他いかなる理由</li>
+
+                <h4 className="font-semibold text-gray-900 mb-2">11.2.1 一般的な返金不可事由</h4>
+                <ul className="list-none space-y-1 ml-4 text-sm mb-4">
+                  <li>✗ サービス停止・終了（事業撤退を含む）</li>
+                  <li>✗ アカウント停止・削除（規約違反による停止を含む）</li>
+                  <li>✗ サービス品質への不満</li>
+                  <li>✗ 機能・性能の期待外れ</li>
+                  <li>✗ 技術的問題（バグ、エラー、障害等）</li>
+                  <li>✗ 他サービスとの比較による不満</li>
+                  <li>✗ 誤解・誤認による購入</li>
+                  <li>✗ 使用しなかった場合</li>
+                  <li>✗ その他いかなる理由</li>
+                </ul>
+
+                <h4 className="font-semibold text-gray-900 mb-2">11.2.2 サブスクリプションの中途解約</h4>
+                <p className="text-sm mb-2">サブスクリプションは、いつでも解約できますが、既払金は返金されません：</p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-sm mb-4">
+                  <li>月の途中で解約しても、日割り計算による返金はありません</li>
+                  <li>例: 1月5日に契約 → 1月20日に解約 → 2月5日まで利用可能、¥945は返金なし</li>
+                </ul>
+
+                <h4 className="font-semibold text-gray-900 mb-2">11.2.3 自動更新による課金</h4>
+                <p className="text-sm mb-2 font-bold text-red-700">
+                  サブスクリプションは自動更新されます。自動更新を停止しなかった場合の返金は一切行いません：
+                </p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-sm mb-4">
+                  <li>「更新を忘れていた」「気づかなかった」等の理由は認められません</li>
+                </ul>
+
+                <h4 className="font-semibold text-gray-900 mb-2">11.2.5 チャージバック（クレジットカード会社への異議申し立て）</h4>
+                <div className="bg-red-100 p-3 rounded mb-4">
+                  <p className="text-sm font-bold text-red-800 mb-2">
+                    ユーザーがクレジットカード会社に対してチャージバック（異議申し立て）を行った場合：
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                    <li>当社は、即座にアカウントを停止します</li>
+                    <li>チャージバックが認められた場合、アカウントを永久削除します</li>
+                    <li>今後の再登録を禁止します</li>
+                    <li>法的措置を講じる場合があります</li>
+                  </ul>
+                  <p className="mt-2 text-sm font-bold">チャージバックは、規約違反行為とみなします。</p>
+                </div>
+
+                <h4 className="font-semibold text-gray-900 mb-2">11.2.8 例外なき返金不可</h4>
+                <p className="text-sm mb-2 font-bold text-red-700">以下の場合でも、例外なく返金は行いません：</p>
+                <ul className="list-disc list-inside space-y-1 ml-4 text-sm">
+                  <li>運営の故意・重過失がある場合</li>
+                  <li>法令違反がある場合</li>
+                  <li>サービスが全く提供されなかった場合</li>
+                  <li>消費者センターから返金要請があった場合</li>
+                  <li>弁護士から返金要請があった場合</li>
+                  <li>裁判所から返金命令があった場合（仲裁判断を除く）</li>
                 </ul>
               </div>
             </section>
@@ -247,11 +294,19 @@ const Terms: React.FC = () => {
                 </li>
                 <li>
                   <input type="checkbox" id="check9" className="mr-2" />
-                  <label htmlFor="check9">返金は一切行われないことに同意します</label>
+                  <label htmlFor="check9" className="font-bold text-red-700">返金は一切行われないことに同意します（自動更新・誤購入・サービス停止等を含む）</label>
                 </li>
                 <li>
                   <input type="checkbox" id="check10" className="mr-2" />
                   <label htmlFor="check10">当社がいつでもサービスを停止できることに同意します</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="check11" className="mr-2" />
+                  <label htmlFor="check11" className="font-bold text-red-700">料金がいつでも値上げされる可能性があることに同意します</label>
+                </li>
+                <li>
+                  <input type="checkbox" id="check12" className="mr-2" />
+                  <label htmlFor="check12" className="font-bold text-red-700">チャージバックを行った場合、アカウントが永久削除されることに同意します</label>
                 </li>
               </ul>
               <p className="mt-4 font-bold text-green-800">

@@ -9,6 +9,8 @@ interface SignupFormData {
   password: string;
   confirmPassword: string;
   name?: string;
+  agreedToTerms: boolean;
+  agreedToNoRefund: boolean;
 }
 
 const Signup: React.FC = () => {
@@ -181,6 +183,57 @@ const Signup: React.FC = () => {
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
                   {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            {/* 利用規約同意チェックボックス */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-start">
+                <input
+                  {...register('agreedToTerms', {
+                    required: '利用規約に同意する必要があります'
+                  })}
+                  type="checkbox"
+                  id="agreedToTerms"
+                  className="mt-1 h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="agreedToTerms" className="ml-3 text-sm text-gray-700">
+                  <Link to="/terms" target="_blank" className="text-blue-600 hover:underline font-medium">
+                    利用規約
+                  </Link>
+                  に同意します *
+                </label>
+              </div>
+              {errors.agreedToTerms && (
+                <p className="text-sm text-red-600 flex items-center ml-8">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  {errors.agreedToTerms.message}
+                </p>
+              )}
+
+              <div className="flex items-start bg-red-50 border-2 border-red-200 rounded-lg p-3">
+                <input
+                  {...register('agreedToNoRefund', {
+                    required: '返金不可ポリシーに同意する必要があります'
+                  })}
+                  type="checkbox"
+                  id="agreedToNoRefund"
+                  className="mt-1 h-5 w-5 text-red-600 border-red-300 rounded focus:ring-red-500"
+                />
+                <label htmlFor="agreedToNoRefund" className="ml-3 text-sm text-gray-900">
+                  <span className="font-bold text-red-700">⚠️ 返金不可ポリシー：</span>
+                  本サービスは、<span className="font-bold underline">いかなる理由があっても返金を行いません</span>（サービス停止・アカウント削除・不満など、すべての理由で返金不可）ことに同意します *
+                </label>
+              </div>
+              {errors.agreedToNoRefund && (
+                <p className="text-sm text-red-600 flex items-center ml-8 font-bold">
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  {errors.agreedToNoRefund.message}
                 </p>
               )}
             </div>

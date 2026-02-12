@@ -140,6 +140,34 @@ const Pricing: React.FC = () => {
           </div>
         )}
 
+        {/* 返金不可の警告 - 目立つ表示 */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="bg-red-600 text-white rounded-xl shadow-2xl p-6 border-4 border-red-700">
+            <div className="flex items-start space-x-4">
+              <div className="text-4xl">⚠️</div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-extrabold mb-3">重要：返金不可ポリシー</h3>
+                <div className="space-y-2 text-lg">
+                  <p className="font-bold">
+                    本サービスは、<span className="underline decoration-4">いかなる理由があっても返金を行いません</span>。
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 text-red-100 ml-4">
+                    <li>サービス停止・終了による返金不可</li>
+                    <li>アカウント削除・停止による返金不可</li>
+                    <li>サービス品質への不満による返金不可</li>
+                    <li>クレジットカード会社へのチャージバック（返金請求）禁止</li>
+                    <li>不正なチャージバックは刑事告訴の対象（詐欺罪：最大10年の懲役）</li>
+                  </ul>
+                  <p className="mt-4 text-base text-red-100">
+                    購入前に必ず<a href="/terms" target="_blank" className="underline font-bold hover:text-white">利用規約</a>をご確認ください。
+                    購入ボタンを押すことで、本ポリシーに同意したものとみなされます。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* プラン比較カード */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {plans.map((plan) => (
@@ -299,10 +327,10 @@ const Pricing: React.FC = () => {
                 クレジットカード（Visa、MasterCard、American Express等）に対応しています。
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h4 className="font-bold text-gray-900 mb-2">返金はできますか？</h4>
-              <p className="text-gray-600">
-                プレミアムプランの初回購入から14日以内であれば、全額返金いたします。
+            <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
+              <h4 className="font-bold text-gray-900 mb-2">⚠️ 返金はできますか？</h4>
+              <p className="text-gray-700 font-semibold">
+                いいえ、いかなる理由があっても返金は行いません。サービス停止・アカウント削除・サービス品質への不満など、すべての理由で返金不可です。
               </p>
             </div>
           </div>

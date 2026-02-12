@@ -119,7 +119,7 @@ router.post('/purchase', authenticate, async (req, res) => {
           currency: 'jpy',
           product_data: {
             name: product.name,
-            description: product.description,
+            description: `⚠️ NO REFUNDS - 返金不可 | ${product.description}`,
             images: []
           },
           unit_amount: product.amount
@@ -133,7 +133,13 @@ router.post('/purchase', authenticate, async (req, res) => {
         ticketType: ticketType,
         tickets: product.tickets.toString(),
         productName: product.name
-      }
+      },
+      // Stripeの決済ページに返金不可の注意書きを表示
+      custom_text: {
+        submit: {
+          message: '⚠️ 購入後の返金は一切できません (NO REFUNDS POLICY)',
+        },
+      },
     });
 
     res.json({
